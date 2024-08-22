@@ -103,6 +103,7 @@ export default defineComponent({
     } else {
       await this.updateScore();
     }
+    this.versionLocal = this.version
   },
   methods: {
     selectVersion(version: string) {

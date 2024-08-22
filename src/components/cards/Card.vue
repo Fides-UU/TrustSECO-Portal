@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import CveVulnerabilities from './CveVulnerabilities.vue';
 
 const props = defineProps({
   fact_code: { type: String, required: true },
@@ -13,7 +14,7 @@ let codeToName: Record<string, string> = {
   cve_vulnerabilities: 'Cve vulnerabilities',
   gh_average_resolution_time: 'Average issue resolution time',
   gh_contributor_count: 'GitHub contributor count',
-  gh_gitstar_ranking: 'GitHub star ranking', // How high it ranks sorted by stars for the specific language
+  gh_gitstar_ranking: 'GitHub star ranking',
   gh_issue_ratio: 'Closed/Open issue ratio',
   gh_open_issues_count: 'Open issues',
   gh_owner_stargazer_count: 'Star count of owner',
@@ -31,18 +32,18 @@ let codeToName: Record<string, string> = {
   lib_latest_release_date: 'Most recent release',
   lib_release_count: 'Amount of releases',
   lib_release_frequency: 'Average time per release',
-  lib_sourcerank: 'Sourcerank metric', // https://libraries.io/pypi/numpy/sourcerank
+  lib_sourcerank: 'Sourcerank metric',
   so_popularity: 'StackOverflow popularity',
-  vs_virus_ratio: 'Virus ratio', // amount of virusses found / amount if links scanned
+  vs_virus_ratio: 'Virus ratio',
 };
 
 let codeToExplanation: Record<string, string> = {
   cve_count: 'Amount of CVE found for this package.',
-  cve_vulnerabilities: '', //TODO explenation of this depends on visualiziation
+  cve_vulnerabilities: '',
   gh_average_resolution_time:
     'Average time it takes for a GitHub issue to be resolved.',
   gh_gitstar_ranking:
-    'How high the repository of the package ranks based on star count among repos with the same programming language.', // How high it ranks sorted by stars for the specific language
+    'How high the repository of the package ranks based on star count among repos with the same programming language.',
   gh_issue_ratio: 'Ration of closed to open GitHub issues.',
   gh_open_issues_count: 'Amount of open issues.',
   gh_owner_stargazer_count:
@@ -72,7 +73,7 @@ let codeToExplanation: Record<string, string> = {
     'A metric created by libraries.io that combines several factors such as amount of stars and if it is still in beta. For more details visit the website: https://libraries.io/pypi/numpy/sourcerank . ',
   so_popularity: 'Monthly stackoverflow popularity.', // TODO
   vs_virus_ratio:
-    'Ratio of virus found to amount of links scanned. Virus are scanned for using ClamAV.', // amount of virusses found / amount if links scanned
+    'Ratio of virus found to amount of links scanned. Virus are scanned for using ClamAV.',
 };
 
 function convertFactValue(fact_value: string, fact_code: string): String {
@@ -100,6 +101,9 @@ function convertFactValue(fact_value: string, fact_code: string): String {
     case 'lib_release_frequency':
       let num2 = parseFloat(fact_value);
       res = num2.toFixed(0).toString();
+      break;
+    case 'cve_vulnerabilities':
+      res = '';
       break;
     default:
       res = fact_value;
@@ -170,17 +174,33 @@ onMounted(() => {
 <template>
   <div class="card">
     <h2 class="fact-name card-child">{{ codeToName[fact_code] }}</h2>
-    <p class="card-child fact-value">
+    <p class="card-child fact-value" v-if="fact_code !== 'cve_vulnerabilities'">
       {{ convertFactValue(fact_content, fact_code) }}
     </p>
     <p class="fact-code card-child">{{ fact_code }}</p>
     <div class="seperator" />
-    <p class="card-child explanation">{{ codeToExplanation[fact_code] }}</p>
-    <div v-if="trust_score_factors.hasOwnProperty(fact_code)" class="card-child score-influence" ref="score_influence_ref">
+    <p
+      class="card-child explanation"
+      v-if="fact_code !== 'cve_vulnerabilities'"
+    >
+      {{ codeToExplanation[fact_code] }}
+    </p>
+    <div
+      v-if="trust_score_factors.hasOwnProperty(fact_code)"
+      class="card-child score-influence"
+      ref="score_influence_ref"
+    >
       <p>
-        Trust score influence: {{ calculate_trust_score_influence(fact_content, fact_code)?.toFixed(0) }}
+        Trust score influence:
+        {{
+          calculate_trust_score_influence(fact_content, fact_code)?.toFixed(0)
+        }}
       </p>
     </div>
+    <CveVulnerabilities
+      v-if="fact_code === 'cve_vulnerabilities'"
+      :cve_data="JSON.parse(fact_content)"
+    />
   </div>
 </template>
 
@@ -188,12 +208,8 @@ onMounted(() => {
 .card {
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  /*width: 15em;*/
-  /*margin: 0.5em;*/
   border-top: 3px solid rgb(44, 130, 224);
   background-color: white;
-  /*height: 10em;*/
-  /*height: 175px;*/
 }
 
 .card-child {
@@ -216,8 +232,6 @@ onMounted(() => {
   font-style: italic;
   font-size: 0.9em;
   height: 87px;
-  /*text-overflow: ellipsis;*/
-  /*overflow: scroll;*/
 }
 
 .seperator {
@@ -226,7 +240,7 @@ onMounted(() => {
   margin-bottom: 0.5em;
   margin-left: auto;
   margin-right: auto;
-  background-color: grey;
+  background-color: var(--va-gray);
   height: 1px;
 }
 
@@ -235,11 +249,9 @@ onMounted(() => {
 }
 
 .fact-value {
-  overflow: scroll;
   height: 1em;
   white-space: nowrap;
 }
-
 
 .score-influence {
   border-radius: 5px;
@@ -249,7 +261,6 @@ onMounted(() => {
 
 .score-influence p {
   font-size: 0.9em;
-  overflow: scroll;
   white-space: nowrap;
 }
 </style>

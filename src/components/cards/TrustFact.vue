@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import CveVulnerabilities from './CveVulnerabilities.vue';
 
 const props = defineProps({
@@ -7,8 +6,6 @@ const props = defineProps({
   fact_content: { type: String, required: true },
   loading: { type: Boolean, required: true },
 });
-
-const score_influence_ref = ref(null);
 
 let codeToName: Record<string, string> = {
   cve_count: 'Cve count',
@@ -163,7 +160,7 @@ function create_border() {
     props.fact_code,
   );
   let color =
-    score_influence === null
+    score_influence === null || props.loading.valueOf()
       ? 'rgb(44, 130, 224)'
       : calculate_color(score_influence);
   return { 'border-top': `3px solid ${color}` };

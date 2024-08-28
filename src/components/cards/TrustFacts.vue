@@ -32,6 +32,16 @@ export default defineComponent({
       await this.updateTrustFacts();
     }
   },
+  computed: {
+    trustFactsWithPlaceholders() {
+      if (this.trustFacts.length > 0) {
+        return this.trustFacts;
+      } else {
+        // add some empty facts to show with the loading animation
+        return Array(12).fill({type: "", value:""})
+      }
+    },
+  },
   methods: {
     async updateTrustFacts() {
       this.isLoading = true;
@@ -50,7 +60,7 @@ export default defineComponent({
 <template>
   <div class="cardContainer">
     <TrustFactCard
-      v-for="trustfact in trustFacts"
+      v-for="trustfact in trustFactsWithPlaceholders"
       :fact_code="trustfact.type"
       :fact_content="trustfact.value"
       :loading="isLoading"

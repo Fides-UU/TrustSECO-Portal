@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { TrustFact } from '../../api';
-import Card from './Card.vue';
+import TrustFactCard from './TrustFact.vue';
 
 export default defineComponent({
   name: 'trust-facts-table',
@@ -42,18 +42,19 @@ export default defineComponent({
     },
   },
   components: {
-    Card,
+    TrustFactCard,
   },
 });
 </script>
 
 <template>
   <div class="cardContainer">
-    <Card
+    <TrustFactCard
       v-for="trustfact in trustFacts"
       :fact_code="trustfact.type"
       :fact_content="trustfact.value"
-    ></Card>
+      :loading="isLoading"
+    ></TrustFactCard>
   </div>
 </template>
 

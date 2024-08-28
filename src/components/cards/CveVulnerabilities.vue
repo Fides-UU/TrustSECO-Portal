@@ -10,10 +10,12 @@ const sorted_cves = computed(() => props.cve_data.sort((c1, c2)=> c1.CVE_ID < c2
 <template>
   <div class="cve-grid">
     <template v-for="cve in sorted_cves">
-      <div class="cve-id"><a :href="`https://nvd.nist.gov/vuln/detail/${cve.CVE_ID}`" target="_blank">{{ cve.CVE_ID }}</a></div>
+      <div class="cve-id">
+        <a :href="`https://nvd.nist.gov/vuln/detail/${cve.CVE_ID}`" target="_blank">{{ cve.CVE_ID }}</a>
+      </div>
       <div class="cve-score">{{ cve.CVE_score }}</div>
       <div class="cve-start">{{ cve.CVE_affected_version_start }}</div>
-      <svg class="range-indicator">
+      <svg class="range-indicator" :style='cve.CVE_affected_version_start !== null || cve.CVE_affected_version_end !== null ? {}:{visibility: "hidden"}'>
         <circle
           cx="4"
           cy="7"
@@ -59,7 +61,7 @@ const sorted_cves = computed(() => props.cve_data.sort((c1, c2)=> c1.CVE_ID < c2
 .range-indicator {
   grid-column: 2/3;
   width: 30px;
-  height: 12px;
+  height: 16px;
   margin: 0px 4px 0px 4px;
 }
 

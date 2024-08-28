@@ -5,6 +5,7 @@ import CveVulnerabilities from './CveVulnerabilities.vue';
 const props = defineProps({
   fact_code: { type: String, required: true },
   fact_content: { type: String, required: true },
+  loading: { type: Boolean, required: true },
 });
 
 const score_influence_ref = ref(null);
@@ -156,23 +157,30 @@ function calculate_single_value(num: number, max: number) {
   return Math.min(255, ((max - num) / max) * 255);
 }
 
-onMounted(() => {
+function create_border() {
   let score_influence = calculate_trust_score_influence(
     props.fact_content,
     props.fact_code,
   );
-  if (score_influence !== null && score_influence_ref.value !== null) {
-    let score_element = score_influence_ref.value as HTMLElement;
-    let color = calculate_color(score_influence);
-    score_element.style.backgroundColor = color;
-    if (score_element.parentElement !== null)
-      score_element.parentElement.style.borderTop = `3px solid ${color}`;
-  }
-});
+  let color =
+    score_influence === null
+      ? 'rgb(44, 130, 224)'
+      : calculate_color(score_influence);
+  return { 'border-top': `3px solid ${color}` };
+}
+
+function create_background() {
+  let score_influence = calculate_trust_score_influence(
+    props.fact_content,
+    props.fact_code,
+  );
+  let color = calculate_color(score_influence as number);
+  return { 'background-color': color };
+}
 </script>
 
 <template>
-  <div class="card">
+  <div class="card" :style="create_border()" v-if="!loading">
     <h2 class="fact-name card-child">{{ codeToName[fact_code] }}</h2>
     <p class="card-child fact-value" v-if="fact_code !== 'cve_vulnerabilities'">
       {{ convertFactValue(fact_content, fact_code) }}
@@ -188,7 +196,7 @@ onMounted(() => {
     <div
       v-if="trust_score_factors.hasOwnProperty(fact_code)"
       class="card-child score-influence"
-      ref="score_influence_ref"
+      :style="create_background()"
     >
       <p>
         Trust score influence:
@@ -202,14 +210,38 @@ onMounted(() => {
       :cve_data="JSON.parse(fact_content)"
     />
   </div>
+  <div class="card card-loading" :style="create_border()" v-if="loading">
+    <div class="card-content-loading"></div>
+  </div>
 </template>
 
 <style scoped>
 .card {
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  border-top: 3px solid rgb(44, 130, 224);
   background-color: white;
+}
+
+.card-loading {
+  height: 190.6px;
+}
+
+.card-content-loading {
+  background: var(--va-background);
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: 3s shine linear infinite;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+  margin: 6px;
+  border-radius: 5px;
+  background-position-x: 200%;
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
 }
 
 .card-child {

@@ -4,9 +4,9 @@
                  clickable hoverable sticky-header striped @row:click="loadPackage">
     <template #cell(versions)="{ rowData }">
       <div v-if="rowData.versions.length >= 3" class="range">
-        <va-badge :text="rowData.versions[rowData.versions.length - 1]" color="secondary"/>
-        -
         <va-badge :text="rowData.versions[0]" color="secondary"/>
+        -
+        <va-badge :text="rowData.versions[rowData.versions.length - 1]" color="secondary"/>
       </div>
       <div class="list">
         <span v-for="version in rowData.versions" :key="version">

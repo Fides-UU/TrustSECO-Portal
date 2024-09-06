@@ -59,6 +59,10 @@ export default class DltMock extends DltInterface {
     return 'Success';
   }
 
+  async getMostRecentVersion(pack: Package): Promise<string> {
+      return "v7.8.9";
+  }
+
   async getMetrics() {
     await fakeDelay();
     return {

@@ -47,6 +47,8 @@ export abstract class DltInterface {
 
   abstract addPackage(pack: AddPackageForm): Promise<string | void>;
 
+  abstract getMostRecentVersion(pack: Package): Promise<string>;
+
   abstract getMetrics(): Promise<Metrics>;
 
   abstract getTrustScore(name: string, version: string): Promise<number | undefined>;

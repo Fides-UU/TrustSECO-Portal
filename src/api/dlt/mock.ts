@@ -56,7 +56,7 @@ export default class DltMock extends DltInterface {
 
   async addPackage(pack: AddPackageForm) {
     await fakeDelay();
-    return 'Success';
+    return 'Added jobs.';
   }
 
   async getMostRecentVersion(pack: Package): Promise<string> {

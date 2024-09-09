@@ -1,64 +1,28 @@
 <template>
-  <va-modal v-model="showModalAdded" hide-default-actions overlay-opacity="0.2">
-    <template #header>
-      <h2>Miner Added</h2>
-    </template>
-    <div>Your miner has been added</div>
-    <template #footer>
-      <va-button @click="showModalAdded = false"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showModalAdded" title="Miner Added">
+    Your miner has been added
+  </PopUpMessage>
 
-  <va-modal v-model="showModalError" hide-default-actions overlay-opacity="0.2">
-    <template #header>
-      <h2>Add Miner Error</h2>
-    </template>
-    <div>{{ errorMessage }}</div>
-    <template #footer>
-      <va-button @click="showModalError = false"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showModalError" title="Add Miner Error">
+    {{ errorMessage }}
+  </PopUpMessage>
 
-  <va-modal v-model="showFieldEmpty" hide-default-actions overlay-opacity="0.2">
-    <template #header>
-      <h2>Field empty</h2>
-    </template>
-    <div>One or more fields have been left empty.</div>
-    <template #footer>
-      <va-button @click="showFieldEmpty = false"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showFieldEmpty" title="Field empty">
+    One or more fields have been left empty.
+  </PopUpMessage>
 
   <!-- 2022-09-13 The following params could possibly be useful if supported by search miner
-  <va-modal
-    v-model="showModalVerbose"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>Verbosity Level</h2>
-    </template>
-    <div>
-      1 = Silent<br />
-      2 = Errors Only<br />
-      3 = Warnings &amp; Errors<br />
-      4 = Everything<br />
-      5 = Debug<br />
-    </div>
-    <template #footer>
-      <va-button @click="showModalVerbose = false"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showModalVerbose" title="Verbosity Level">
+    1 = Silent<br />
+    2 = Errors Only<br />
+    3 = Warnings &amp; Errors<br />
+    4 = Everything<br />
+    5 = Debug<br />
+  </PopUpMessage>
 
-  <va-modal v-model="showModalCPU" hide-default-actions overlay-opacity="0.2">
-    <template #header>
-      <h2>CPUs</h2>
-    </template>
-    <div>computer's cores to use.</div>
-    <template #footer>
-      <va-button @click="showModalCPU = false"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showModalCPU" title="CPUs">
+    computer's cores to use.
+  </PopUpMessage>
   -->
 
   <va-form>
@@ -116,9 +80,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import PopUpMessage from '@/components/PopUpMessage.vue';
 
 export default defineComponent({
   name: 'add-miner-component',
+  components: {PopUpMessage},
   data() {
     return {
       // showModalCPU: false,

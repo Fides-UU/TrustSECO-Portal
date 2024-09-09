@@ -1,99 +1,27 @@
 <template>
-  <va-modal
-    v-model="modal.showSavedModal"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>Settings saved</h2>
-    </template>
-    <div>Your settings have been saved</div>
-    <template #footer>
-      <va-button @click="modal.showSavedModal = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="modal.showSavedModal" title="Settings saved">
+    Your settings have been saved
+  </PopUpMessage>
 
-  <va-modal
-    v-model="modal.showGitHubProfileLinkModal"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>GitHub Username</h2>
-    </template>
-    <div>Enter your GitHub Username here. <br /></div>
-    <template #footer>
-      <va-button @click="modal.showGitHubProfileLinkModal = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
-  
-  <va-modal
-    v-model="modal.showGitHubTokenModal"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>GitHub Token</h2>
-    </template>
-    <div>Follow <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">this guide</a> on how to create a personal acces token on GitHub, and paste it here.<br />You do not need to select scopes.</div>
-    <template #footer>
-      <va-button @click="modal.showGitHubTokenModal = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="modal.showGitHubProfileLinkModal" title="GitHub Username">
+    Enter your GitHub Username here. <br />
+  </PopUpMessage>
 
-  <va-modal
-    v-model="modal.showLibrariesIOTokenModal"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>Libraries.IO Token</h2>
-    </template>
-    <div>Go to your Libaries.IO <a href="https://libraries.io/account" target="_blank" rel="noopener noreferrer">account page</a> and copy your API token.</div>
-    <template #footer>
-      <va-button @click="modal.showLibrariesIOTokenModal = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="modal.showGitHubTokenModal" title="GitHub Token">
+    Follow <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">this guide</a> on how to create a personal acces token on GitHub, and paste it here.<br />You do not need to select scopes.
+  </PopUpMessage>
 
-  <va-modal
-    v-model="modal.showDLTGPGModal"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>DLT GPG Key</h2>
-    </template>
-    <div>Copy the key below and add it to your GitHub account, following <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-new-gpg-key-to-your-github-account">this guide</a></div>
-    <template #footer>
-      <va-button @click="modal.showDLTGPGModal = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="modal.showLibrariesIOTokenModal" title="Libraries.IO Token">
+    Go to your Libaries.IO <a href="https://libraries.io/account" target="_blank" rel="noopener noreferrer">account page</a> and copy your API token.
+  </PopUpMessage>
 
-  <va-modal
-    v-model="modal.showGPGkeyInGitHub"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>GPG Key</h2>
-    </template>
-    <div>The DLT GPG key has not been added to your GitHub account yet!</div>
-    <template #footer>
-      <va-button @click="modal.showGPGkeyInGitHub = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="modal.showDLTGPGModal" title="DLT GPG Key">
+    Copy the key below and add it to your GitHub account, following <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-new-gpg-key-to-your-github-account">this guide</a>
+  </PopUpMessage>
+
+  <PopUpMessage v-model="modal.showGPGkeyInGitHub" title="GPG Key">
+    The DLT GPG key has not been added to your GitHub account yet!
+  </PopUpMessage>
 
 
   <div class="flex xs12">
@@ -159,9 +87,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from 'axios';
+import PopUpMessage from '@/components/PopUpMessage.vue';
 
 export default defineComponent({
   name: 'user-settings-component',
+  components: {PopUpMessage},
   props: {
     id: String,
   },
@@ -193,7 +123,7 @@ export default defineComponent({
         data: "https://github.com/"+this.request_data.user.gh_username.toLowerCase()+".gpg",
       }).then((response) => {
         this.modal.showGPGkeyInGitHub = !(response.data.stored_on_github);
-        
+
         axios.post('http://localhost:3000/api/spider/set-tokens', {
           github_token: this.request_data.user.gh_token,
           libraries_token: this.request_data.user.libraries_token,
@@ -204,13 +134,13 @@ export default defineComponent({
         });
       }).catch((error) => {
           console.log(error.message);
-      });            
+      });
     },
     validateRequired(value: string) {
       return (value && value.length > 0) || 'Field is required';
     },
-    copyToClipboard(){      
-      this.$copyText(this.request_data.user.dlt_gpg);            
+    copyToClipboard(){
+      this.$copyText(this.request_data.user.dlt_gpg);
     }
   },
   async mounted() {

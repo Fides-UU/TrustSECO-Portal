@@ -1,33 +1,19 @@
 <template>
-  <va-modal v-model="showAddedModal" hide-default-actions overlay-opacity="0.2">
-    <template #header>
-      <h2>Package added</h2>
-    </template>
-    <div>Package {{ job.name }} with version {{ job.release }} has been added </div>
-    <template #footer>
-      <va-button @click="showAddedModal = false"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showAddedModal" title="Package added">
+    Package {{ job.name }} with version {{ job.release }} has been added
+  </PopUpMessage>
 
-  <va-modal v-model="showFieldEmpty" hide-default-actions overlay-opacity="0.2">
-    <template #header>
-      <h2>Field empty</h2>
-    </template>
-    <div>One or more fields have been left empty.</div>
-    <template #footer>
-      <va-button @click="showFieldEmpty = false"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showFieldEmpty" title="Field empty">
+    One or more fields have been left empty.
+  </PopUpMessage>
 
-  <va-modal v-model="showAlreadyAdded" hide-default-actions overlay-opacity="0.2">
-    <template #header>
-      <h2>Already added</h2>
-    </template>
-    <div>Package {{ job.name }} with version {{ job.release }} already in system, click close to show.</div>
-    <template #footer>
-      <va-button @click="showPackage"> Close </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showAlreadyAdded" title="Already added" @button-clicked="showPackage">
+    Package {{ job.name }} with version {{ job.release }} already in system, click close to show.
+  </PopUpMessage>
+
+  <PopUpMessage v-model="showError" title="Error retreiving most recent version">
+    Can't retreive most recent version from version.
+  </PopUpMessage>
 
   <va-form>
     <div class="row">
@@ -56,10 +42,7 @@
         placeholder="leave empty for most recent version"
       />
       <div class="flex xs12">
-        <va-button type="submit" @click="addPackage">Submit</va-button>
-        <div v-if="response">
-          <p>{{ response }}</p>
-        </div>
+        <va-button :loading="isLoading" type="submit" @click="addPackage">Submit</va-button>
       </div>
     </div>
   </va-form>
@@ -68,15 +51,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import router from '@/router';
+import PopUpMessage from '@/components/PopUpMessage.vue';
 
 export default defineComponent({
   name: 'add-package-component',
+  components: {PopUpMessage},
   data() {
     return {
       showAddedModal: false,
       showAlreadyAdded: false,
+      showError: false,
       showFieldEmpty: false,
-      response: '',
+      isLoading: false,
       job: {
         platform: '',
         owner: '',
@@ -87,15 +73,22 @@ export default defineComponent({
   },
   methods: {
     async addPackage() {
+      this.isLoading = true;
       if (this.job.platform.length > 0 && this.job.owner.length > 0 && this.job.name.length > 0) {
         // if no release was specified grab the latest one
         if (this.job.release.length === 0) {
-          this.job.release = await this.$dltApi.getMostRecentVersion({
+          const version = await this.$dltApi.getMostRecentVersion({
             platform: this.job.platform,
             owner: this.job.owner,
             name: this.job.name,
             versions: [],
           });
+          if (version == '') {
+            this.isLoading = false;
+            this.showError = true;
+            return;
+          }
+          this.job.release = version;
         }
 
         // check if the package is already in the system
@@ -115,6 +108,7 @@ export default defineComponent({
       } else {
         this.showFieldEmpty = true;
       }
+      this.isLoading = false;
     },
     // TODO: Move to generalized validation system
     validateRequired(value: string) {

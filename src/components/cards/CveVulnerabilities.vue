@@ -50,7 +50,8 @@ const sorted_cves = computed(() => props.cve_data.sort((c1, c2)=> c1.CVE_ID < c2
 
 .cve-id{
   grid-column: 1/3;
-  padding-left: 1em;
+  padding-left: 8px;
+  white-space: nowrap;
 }
 
 .cve-start {

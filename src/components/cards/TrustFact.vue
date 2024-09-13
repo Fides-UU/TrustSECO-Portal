@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CveVulnerabilities from './CveVulnerabilities.vue';
 
-const props = defineProps({
+defineProps({
   fact_code: { type: String, required: true },
   fact_content: { type: String, required: true },
   loading: { type: Boolean, required: true },
@@ -109,80 +109,14 @@ function convertFactValue(fact_value: string, fact_code: string): String {
   }
   return res;
 }
-
-let trust_score_factors: Record<string, number> = {
-  cve_count: -16,
-  gh_contributor_count: 4,
-  gh_issue_ratio: -15,
-  gh_open_issues_count: 34,
-  gh_owner_stargazer_count: 24,
-  gh_release_download_count: 48,
-  gh_total_download_count: 63,
-  gh_user_count: 60,
-  gh_yearly_commit_count: 15,
-  gh_zero_response_issues_count: -12,
-  lib_contributor_count: 6,
-  lib_dependency_count: 8,
-  lib_dependent_count: 7,
-  lib_release_count: 2,
-  lib_release_frequency: 2,
-  so_popularity: 30,
-  vs_virus_ratio: -16,
-};
-
-function calculate_trust_score_influence(
-  fact_value: string,
-  fact_code: string,
-): number | null {
-  if (!trust_score_factors.hasOwnProperty(fact_code)) return null;
-  return trust_score_factors[fact_code] * parseFloat(fact_value);
-}
-
-function calculate_color(score_influence: number): string {
-  if (score_influence < 0) {
-    let logged = Math.log10(-score_influence);
-    let value = calculate_single_value(logged, 3);
-    return `rgb(255,${value},${value})`;
-  } else {
-    let logged = Math.log10(score_influence);
-    let value = calculate_single_value(logged, 7);
-    return `rgb(${value},255,${value})`;
-  }
-}
-
-function calculate_single_value(num: number, max: number) {
-  return Math.min(255, ((max - num) / max) * 255);
-}
-
-function create_border() {
-  let score_influence = calculate_trust_score_influence(
-    props.fact_content,
-    props.fact_code,
-  );
-  let color =
-    score_influence === null || props.loading.valueOf()
-      ? 'rgb(44, 130, 224)'
-      : calculate_color(score_influence);
-  return { 'border-top': `3px solid ${color}` };
-}
-
-function create_background() {
-  let score_influence = calculate_trust_score_influence(
-    props.fact_content,
-    props.fact_code,
-  );
-  let color = calculate_color(score_influence as number);
-  return { 'background-color': color };
-}
 </script>
 
 <template>
-  <div class="card" :style="create_border()" v-if="!loading">
+  <div class="card" v-if="!loading">
     <h2 class="fact-name card-child">{{ codeToName[fact_code] }}</h2>
     <p class="card-child fact-value" v-if="fact_code !== 'cve_vulnerabilities'">
       {{ convertFactValue(fact_content, fact_code) }}
     </p>
-    <p class="fact-code card-child">{{ fact_code }}</p>
     <div class="seperator" />
     <p
       class="card-child explanation"
@@ -190,37 +124,26 @@ function create_background() {
     >
       {{ codeToExplanation[fact_code] }}
     </p>
-    <div
-      v-if="trust_score_factors.hasOwnProperty(fact_code)"
-      class="card-child score-influence"
-      :style="create_background()"
-    >
-      <p>
-        Trust score influence:
-        {{
-          calculate_trust_score_influence(fact_content, fact_code)?.toFixed(0)
-        }}
-      </p>
-    </div>
     <CveVulnerabilities
       v-if="fact_code === 'cve_vulnerabilities'"
       :cve_data="JSON.parse(fact_content)"
     />
   </div>
-  <div class="card card-loading" :style="create_border()" v-if="loading">
+  <div class="card card-loading" v-if="loading">
     <div class="card-content-loading"></div>
   </div>
 </template>
 
 <style scoped>
 .card {
+  border-top: 3px solid rgb(44, 130, 224);
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   background-color: white;
 }
 
 .card-loading {
-  height: 190.6px;
+  height: 167px;
 }
 
 .card-content-loading {
@@ -261,6 +184,7 @@ function create_background() {
   font-style: italic;
   font-size: 0.9em;
   height: 87px;
+  overflow: scroll;
 }
 
 .seperator {
@@ -273,23 +197,8 @@ function create_background() {
   height: 1px;
 }
 
-.explanation:has(+ .score-influence) {
-  height: 70px;
-}
-
 .fact-value {
   height: 1em;
-  white-space: nowrap;
-}
-
-.score-influence {
-  border-radius: 5px;
-  padding: 2px 4px 2px 4px;
-  margin-bottom: 8px;
-}
-
-.score-influence p {
-  font-size: 0.9em;
   white-space: nowrap;
 }
 </style>

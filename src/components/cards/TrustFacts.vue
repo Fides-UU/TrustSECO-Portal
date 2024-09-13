@@ -2,6 +2,62 @@
 import { defineComponent } from 'vue';
 import { TrustFact } from '../../api';
 import TrustFactCard from './TrustFact.vue';
+import TrustFactCategory from './TrustFactCategory.vue';
+
+interface category {
+  name: string;
+  fact_codes: string[];
+}
+
+let categories: category[] = [
+  {
+    name: 'Community and Popularity',
+    fact_codes: [
+      'gh_gitstart_ranking',
+      'gh_owner_stargazer_count',
+      'gh_release_download_count',
+      'so_popularity',
+      'gh_contributor_count',
+      'lib_contrubtor_count',
+      'lib_sourcerank',
+    ],
+  },
+  {
+    name: 'Dependencies and Ecosystem',
+    fact_codes: [
+      'gh_user_count',
+      'lib_dependency_count',
+      'lib_dependent_count',
+    ],
+  },
+  {
+    name: 'Technical Specifications',
+    fact_codes: [
+      // TODO just a single fact will be a bit akward for the visualisation
+      // maybe move it above with the package info?
+      'gh_repository_language',
+    ],
+  },
+  {
+    name: 'Project Health and Maintenance',
+    fact_codes: [
+      'lib_first_release_date',
+      'gh_issue_ratio',
+      'gh_open_issues_count',
+      'gh_release_issues_count',
+      'gh_yearly_commit_count',
+      'gh_zero_response_issues_count',
+      'lib_latest_release_date',
+      'lib_release_count',
+      'lib_release_frequency',
+      'gh_average_resolution_time',
+    ],
+  },
+  {
+    name: 'Security',
+    fact_codes: ['cve_count', 'cve_vulnerabilities', 'vs_virus_ratio'],
+  },
+];
 
 export default defineComponent({
   name: 'trust-facts-table',
@@ -20,6 +76,7 @@ export default defineComponent({
       trustFacts: [] as TrustFact[],
       filter: '',
       isLoading: true,
+      categories: categories,
     };
   },
   watch: {
@@ -38,7 +95,7 @@ export default defineComponent({
         return this.trustFacts;
       } else {
         // add some empty facts to show with the loading animation
-        return Array(12).fill({type: "", value:""})
+        return Array(12).fill({ type: '', value: '' });
       }
     },
   },
@@ -49,22 +106,27 @@ export default defineComponent({
         await this.$dltApi.getTrustFacts(this.name, this.version)
       ).sort((a, b) => (a.type === b.type ? 0 : a.type > b.type ? 1 : -1));
       this.isLoading = false;
-    },
+    }
   },
   components: {
     TrustFactCard,
+    TrustFactCategory,
   },
 });
 </script>
 
 <template>
   <div class="cardContainer">
-    <TrustFactCard
-      v-for="trustfact in trustFactsWithPlaceholders"
-      :fact_code="trustfact.type"
-      :fact_content="trustfact.value"
-      :loading="isLoading"
-    ></TrustFactCard>
+    <TrustFactCategory
+      v-for="category in categories"
+      :category="category.name"
+      :trustFacts="
+        trustFacts.filter((fact: TrustFact) =>
+          category.fact_codes.includes(fact.type),
+        )
+      "
+      :isLoading="isLoading"
+    ></TrustFactCategory>
   </div>
 </template>
 
@@ -72,6 +134,6 @@ export default defineComponent({
 .cardContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
-  gap: 24px;
+  gap: 18px;
 }
 </style>

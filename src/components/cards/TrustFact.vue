@@ -184,7 +184,7 @@ function convertFactValue(fact_value: string, fact_code: string): String {
   font-style: italic;
   font-size: 0.9em;
   height: 87px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .seperator {

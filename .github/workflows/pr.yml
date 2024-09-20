@@ -7,8 +7,10 @@ on: [pull_request]
 
 jobs:
   main:
-    runs-on: self-hosted
-    container: node:16
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['16.x']
     permissions: write-all
     steps:
       - name: Checkout code

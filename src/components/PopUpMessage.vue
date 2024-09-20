@@ -1,11 +1,12 @@
 <script setup lang="ts">
-const props = defineProps<{ title: string }>();
-const enabled = defineModel()
-defineEmits(['button-clicked'])
+/* eslint-disable no-undef */
+defineProps<{ title: string }>();
+const enabled = defineModel<boolean>();
+defineEmits(['button-clicked']);
 </script>
 
 <template>
-  <va-modal v-model="enabled as boolean" hide-default-actions overlay-opacity="0.2">
+  <va-modal v-model="enabled" hide-default-actions overlay-opacity="0.2">
     <template #header>
       <h2>{{ title }}</h2>
     </template>

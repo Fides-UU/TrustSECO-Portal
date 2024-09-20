@@ -55,7 +55,7 @@ import PopUpMessage from '@/components/PopUpMessage.vue';
 
 export default defineComponent({
   name: 'add-package-component',
-  components: {PopUpMessage},
+  components: { PopUpMessage },
   data() {
     return {
       showAddedModal: false,
@@ -83,7 +83,7 @@ export default defineComponent({
             name: this.job.name,
             versions: [],
           });
-          if (version == '') {
+          if (version === '') {
             this.isLoading = false;
             this.showError = true;
             return;
@@ -93,16 +93,13 @@ export default defineComponent({
 
         // check if the package is already in the system
         const pack = await this.$dltApi.getPackage(this.job.name);
-        if (pack.versions.includes(this.job.release))
-        {
+        if (pack.versions.includes(this.job.release)) {
           this.showAlreadyAdded = true;
-        }
-        else
-        {
+        } else {
           const result = await this.$dltApi.addPackage(this.job);
 
           if (typeof result === 'string') {
-            if (result == 'Added jobs.') this.showAddedModal = true;
+            if (result === 'Added jobs.') this.showAddedModal = true;
           }
         }
       } else {
@@ -122,7 +119,7 @@ export default defineComponent({
           version: this.job.release,
         },
       });
-    }
+    },
   },
 });
 </script>

@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { fakeDelay } from '@/lib.js';
-import { SpiderInterface } from '@/api/spider/interface';
+import { SpiderInterface, TokensResult } from '@/api/spider/interface';
 
 export default class SpiderMock extends SpiderInterface {
   async getSpiderStatus() {
@@ -12,6 +12,13 @@ export default class SpiderMock extends SpiderInterface {
     await fakeDelay();
     this.isActive = targetState;
     return this.isActive;
+  }
+
+  async getTokens(): Promise<TokensResult> {
+    return {
+      github_token: null,
+      libraries_token: null
+    };
   }
 }
 

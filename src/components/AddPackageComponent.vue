@@ -17,11 +17,16 @@
 
   <va-form>
     <div class="row">
-      <va-input
+      <va-select
         v-model="job.platform"
-        :rules="[validateRequired]"
-        class="flex xs6"
+        v-model:search="autoCompleteSearchValue"
+        class="col-span-1 flex xs6"
         label="Platform"
+        placeholder="Type or select platform"
+        :options="platform_options"
+        autocomplete
+        highlight-matched-text
+        :rules="[validateRequired]"
       />
       <va-input
         v-model="job.owner"
@@ -52,6 +57,7 @@
 import { defineComponent } from 'vue';
 import router from '@/router';
 import PopUpMessage from '@/components/PopUpMessage.vue';
+import { getAllPlatforms } from '@/api/ApiCalls';
 
 export default defineComponent({
   name: 'add-package-component',
@@ -69,6 +75,13 @@ export default defineComponent({
         name: '',
         release: '',
       },
+      platform_options: [
+        'NPM', 'Maven', 'Pypi', 'NuGet', 'Go', 'Packagist', 'Rubygems',
+        'Cargo', 'CocoaPods', 'Bower', 'Pub', 'CPAN', 'CRAN', 'Clojars',
+        'Conda', 'Hackage', 'Hex', 'Meteor', 'Homebrew', 'Puppet', 'Carthage',
+        'SwiftPM', 'Julia', 'Elm', 'Dub', 'Racket', 'Nimble', 'Haxelib',
+        'PureScript', 'Alcatraz', 'Inqlude',
+      ],// stand in value before the request to libraries.io finishes
     };
   },
   methods: {
@@ -120,6 +133,12 @@ export default defineComponent({
         },
       });
     },
+  },
+  created() {
+    // replace the stand in with the actual request to libraries.io
+    getAllPlatforms().then((plats) => {
+      if (plats !== null) this.platform_options = plats;
+    });
   },
 });
 </script>

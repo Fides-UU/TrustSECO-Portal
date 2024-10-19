@@ -44,11 +44,15 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 .loading-container {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: space-around;
+}
+
+.seperator:last-child {
+  display: none;
 }
 </style>

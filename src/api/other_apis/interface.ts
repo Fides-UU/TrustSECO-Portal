@@ -11,10 +11,14 @@ export enum ServerType {
 
 export abstract class ApiInterface {
   /** request the cosy server type, public or private */
-  abstract getServerType(): Promise<ServerType>;
+  abstract getServerType(): ServerType;
 
   install(app: App, config: GlobalConfig) {
     // eslint-disable-next-line no-param-reassign
     app.config.globalProperties.$api = this;
+  }
+
+  isPrivate() {
+    return this.getServerType() === ServerType.Private;
   }
 }

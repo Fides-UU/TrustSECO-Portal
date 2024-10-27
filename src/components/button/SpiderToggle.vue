@@ -1,7 +1,7 @@
 <template>
   <va-switch v-model="state" :color="getColor" :loading="isLoading"
              class="spiderToggleButton" indeterminate left-label
-             @click.capture.stop="toggle">
+             @click.capture.stop="toggle" v-if="this.$api.isPrivate()">
     {{ getStatusText }}
   </va-switch>
 

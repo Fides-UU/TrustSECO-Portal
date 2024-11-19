@@ -109,7 +109,14 @@ export default defineComponent({
         if (pack.versions.includes(this.job.release)) {
           this.showAlreadyAdded = true;
         } else {
-          const result = await this.$dltApi.addPackage(this.job);
+          // ledger only accepts lower case platform names
+          const job_copy = {
+            platform: this.job.platform.toLowerCase(),
+            owner: this.job.owner,
+            name: this.job.name,
+            release: this.job.release
+          }
+          const result = await this.$dltApi.addPackage(job_copy);
 
           if (typeof result === 'string') {
             if (result === 'Added jobs.') this.showAddedModal = true;

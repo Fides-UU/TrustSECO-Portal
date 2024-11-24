@@ -12,7 +12,7 @@
             TrustSECO</va-chip
           >
         </va-navbar-item>
-        <va-navbar-item v-if="this.$api.isPrivate()">
+        <va-navbar-item v-if="this.server_type===1">
           <va-chip
             :to="{ name: 'SearchSECO' }"
             :color="currentSubject === 'search' ? 'dark' : '#ffffff'"
@@ -38,6 +38,7 @@
 import router from '@/router';
 import Header from './Header.vue';
 import HeaderSearch from './HeaderSearch.vue';
+import { ServerType } from '@/api';
 
 export default {
   name: 'header-component',
@@ -48,7 +49,11 @@ export default {
   data() {
     return {
       usertokens: 0,
+      server_type: ServerType.Public
     };
+  },
+  async mounted() {
+    this.server_type = await this.$api.getServerType();
   },
   computed: {
     isDevMode() {

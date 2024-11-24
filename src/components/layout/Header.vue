@@ -1,7 +1,7 @@
 <template>
   <div class="app-layout__navbar">
     <va-navbar color="#ffffff" text-color="primary">
-      <template v-slot:left v-if="this.$api.isPrivate()">
+      <template v-slot:left v-if="this.server_type===1">
         <va-navbar-item>
           <va-chip color="dark" flat @click="refreshUserTokens">User tokens: {{ usertokens }}</va-chip>
         </va-navbar-item>
@@ -12,7 +12,7 @@
                      color="dark">Home
           </va-button>
         </va-navbar-item>
-        <va-navbar-item v-if="this.$api.isPrivate()">
+        <va-navbar-item v-if="this.server_type===1">
           <va-button :flat="currentRoute !== 'Add Package'" :square="currentRoute === 'Add Package'"
                      :to="{ name: 'Add Package' }" color="dark">Add Package
           </va-button>
@@ -28,7 +28,7 @@
           </va-button>
         </va-navbar-item>
       </template>
-      <template v-slot:right v-if="this.$api.isPrivate()">
+      <template v-slot:right v-if="this.server_type===1">
         <va-navbar-item>
           <va-button :flat="currentRoute !== 'Settings'" :square="currentRoute === 'Settings'"
                      :to="{ name: 'Settings' }" color="dark">Settings
@@ -42,12 +42,14 @@
 <script>
 import router from '@/router';
 import axios from 'axios';
+import { ServerType } from '@/api';
 
 export default {
   name: 'header-component',
   data() {
     return {
       usertokens: 0,
+      server_type: ServerType.Public
     };
   },
   methods: {
@@ -62,6 +64,7 @@ export default {
   },
   async mounted() {
     this.refreshUserTokens();
+    this.server_type = await this.$api.getServerType();
   },
   computed: {
     currentRoute() {

@@ -1,7 +1,7 @@
 <template>
   <va-switch v-model="state" :color="getColor" :loading="isLoading"
              class="spiderToggleButton" indeterminate left-label
-             @click.capture.stop="toggle" v-if="this.$api.isPrivate()">
+             @click.capture.stop="toggle" v-if="this.server_type===1">
     {{ getStatusText }}
   </va-switch>
 
@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import PopUpMessage from '@/components/PopUpMessage.vue';
+import { ServerType } from '@/api';
 
 export default defineComponent({
   name: 'spider-toggle-button',
@@ -25,12 +26,14 @@ export default defineComponent({
       isLoading: false,
       showSpiderErrorModal: false,
       modalErrorMessage: "",
+      server_type: ServerType.Public
     };
   },
   async mounted() {
     this.isActive = await this.$spiderApi.getSpiderStatus();
     this.state = this.isActive;
     console.log('SpiderToggle.load', this.isActive);
+    this.server_type = await this.$api.getServerType();
   },
   computed: {
     getColor(): string {

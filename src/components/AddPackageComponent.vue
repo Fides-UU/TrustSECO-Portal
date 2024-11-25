@@ -112,8 +112,8 @@ export default defineComponent({
           // ledger only accepts lower case platform names
           const job_copy = {
             platform: this.job.platform.toLowerCase(),
-            owner: this.job.owner,
-            name: this.job.name,
+            owner: this.job.owner.toLowerCase(),
+            name: this.job.name.toLowerCase(),
             release: this.job.release
           }
           const result = await this.$dltApi.addPackage(job_copy);

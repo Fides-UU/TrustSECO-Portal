@@ -77,6 +77,7 @@ export default defineComponent({
       filter: '',
       isLoading: true,
       categories: categories,
+      scoreCategories: {} as Record<string, number>,
     };
   },
   watch: {
@@ -106,6 +107,7 @@ export default defineComponent({
         await this.$dltApi.getTrustFacts(this.name, this.version)
       ).sort((a, b) => (a.type === b.type ? 0 : a.type > b.type ? 1 : -1));
       this.isLoading = false;
+      this.scoreCategories = await this.$dltApi.getTrustScoreCategories(this.name, this.version);
     }
   },
   components: {
@@ -126,6 +128,7 @@ export default defineComponent({
         )
       "
       :isLoading="isLoading"
+      :categoryScore="scoreCategories[category.name]"
     ></TrustFactCategory>
   </div>
 </template>

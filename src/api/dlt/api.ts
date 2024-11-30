@@ -138,6 +138,11 @@ export default class DltApi extends DltInterface {
     return (typeof data === 'number' ? data : undefined);
   }
 
+  async getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>> {
+    const { data } = await axios.get(this.#getLink(`package/${name}/trust-score/${version}`));
+    return data;
+  }
+
   #getLink(to: string) {
     return `${this.#baseUrl}${to}`;
   }

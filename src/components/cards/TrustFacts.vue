@@ -4,12 +4,15 @@ import { TrustFact } from '../../api';
 import TrustFactCard from './TrustFact.vue';
 import TrustFactCategory from './TrustFactCategory.vue';
 
-interface category {
-  name: string;
-  fact_codes: string[];
+interface Category {
+  name: string,
+  trustfacts: TrustFact[],
+  score: number,
 }
 
-let categories: category[] = [
+let categories = [
+  // Technical specifications category is not included here, as the programming
+  // language fact has been moved to the packageDetails component
   {
     name: 'Community and Popularity',
     fact_codes: [
@@ -28,14 +31,6 @@ let categories: category[] = [
       'gh_user_count',
       'lib_dependency_count',
       'lib_dependent_count',
-    ],
-  },
-  {
-    name: 'Technical Specifications',
-    fact_codes: [
-      // TODO just a single fact will be a bit akward for the visualisation
-      // maybe move it above with the package info?
-      'gh_repository_language',
     ],
   },
   {
@@ -91,7 +86,7 @@ export default defineComponent({
     }
   },
   computed: {
-    trustFactsWithPlaceholders() {
+    trustFactsWithPlaceholders(): TrustFact[] {
       if (this.trustFacts.length > 0) {
         return this.trustFacts;
       } else {
@@ -99,6 +94,21 @@ export default defineComponent({
         return Array(12).fill({ type: '', value: '' });
       }
     },
+    /** Filters out the correct facts for each category, and filters out any
+    categories that do not contain any trustfacts */
+    categoryTrustFacts(): Category[] {
+      let categorys = [] as Category[];
+      for (let category of categories) {
+        // Filter only the facts the belong to this category
+        let category_facts = this.trustFacts.filter((fact: TrustFact) =>
+          category.fact_codes.includes(fact.type),
+        );
+        if (category_facts.length > 0) {
+          categorys.push({ name: category.name, trustfacts: category_facts, score: this.scoreCategories[category.name] });
+        }
+      }
+      return categorys;
+    }
   },
   methods: {
     async updateTrustFacts() {
@@ -120,16 +130,12 @@ export default defineComponent({
 <template>
   <div class="cardContainer">
     <TrustFactCategory
-      v-for="category in categories"
+      v-for="category in categoryTrustFacts"
       :category="category.name"
-      :trustFacts="
-        trustFacts.filter((fact: TrustFact) =>
-          category.fact_codes.includes(fact.type),
-        )
-      "
+      :trustFacts="category.trustfacts"
       :isLoading="isLoading"
-      :categoryScore="scoreCategories[category.name]"
-    ></TrustFactCategory>
+      :categoryScore="category.score">
+    </TrustFactCategory>
   </div>
 </template>
 

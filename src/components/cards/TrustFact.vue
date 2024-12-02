@@ -93,12 +93,12 @@ function convertFactValue(fact_value: string, fact_code: string): String {
     case 'vs_virus_ration':
     case 'gh_issue_ratio':
       let num = parseFloat(fact_value);
-      res = num.toFixed(3).toString();
+      res = num.toFixed(3);
       break;
     case 'gh_average_resolution_time':
     case 'lib_release_frequency':
       let num2 = parseFloat(fact_value);
-      res = num2.toFixed(0).toString();
+      res = convertDuration(num2);
       break;
     case 'cve_vulnerabilities':
       res = '';
@@ -108,6 +108,47 @@ function convertFactValue(fact_value: string, fact_code: string): String {
       break;
   }
   return res;
+}
+
+// Time intervals to be usid in displaying time durations
+const timeIntervals = [
+  { name: "year",   duration: 365*24*60*60 },
+  { name: "month",  duration: 30.4*24*60*60 },
+  { name: "week",   duration: 7*24*60*60 },
+  { name: "day",    duration: 24*60*60 },
+  { name: "hour",   duration: 60*60 },
+  { name: "minute", duration: 60 },
+  { name: "second", duration: 1 },
+]
+
+// the amount of terms that the formatting should print
+// for example termAmount -> 1 year, 2 weeks, 3 minutes
+const termAmount = 2;
+
+/** Converts a duration in seconds to a pretty format.
+* There is already a built in javascript function for this, but it is not
+* supported on every browser yet. */
+function convertDuration(seconds: number): String {
+  seconds = Math.floor(seconds);
+  if (seconds === 0) return "0 seconds";
+  let formatted = "";
+  for(let i = 0; i < termAmount && seconds > 0; i++){
+    // Find biggest duration that fits in the amount of seconds
+    const max_duration = timeIntervals.find(({duration}) => duration <= seconds);
+    if (max_duration === undefined) break;
+    const { name, duration } = max_duration;
+
+    const amount = Math.floor(seconds/duration);
+    seconds = seconds % duration;
+    // Add seperator if string isn't empty
+    if (formatted.length > 0) formatted += ", ";
+
+    let string = `${amount} ${name}`;
+    // Make plural if amount is bigger than 1
+    if (amount > 1) string += "s";
+    formatted += string;
+  }
+  return formatted;
 }
 </script>
 

@@ -13,7 +13,7 @@ let codeToName: Record<string, string> = {
   gh_average_resolution_time: 'Average issue resolution time',
   gh_contributor_count: 'GitHub contributor count',
   gh_gitstar_ranking: 'GitHub star ranking',
-  gh_issue_ratio: 'Closed/Open issue ratio',
+  gh_issue_ratio: 'Open/Closed issue ratio',
   gh_open_issues_count: 'Open issues',
   gh_owner_stargazer_count: 'Star count of owner',
   gh_release_download_count: 'Release download count',
@@ -42,7 +42,7 @@ let codeToExplanation: Record<string, string> = {
     'Average time it takes for a GitHub issue to be resolved.',
   gh_gitstar_ranking:
     'How high the repository ranks based on star count among repos with the same programming language.',
-  gh_issue_ratio: 'Ratio of closed to open GitHub issues.',
+  gh_issue_ratio: 'Ratio of open to closed GitHub issues.',
   gh_open_issues_count: 'Number of open issues.',
   gh_owner_stargazer_count:
     'Total number of Stargazers the owner of the repository has.',

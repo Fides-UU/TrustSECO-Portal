@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
 import { Package } from '@/api';
 import router from '@/router';
 
-defineProps<{ package: Package }>();
+const props = defineProps<{ package: Package }>();
+
+const score = ref(" - ");
 
 function loadPackage(name: string) {
   router.push({
@@ -37,6 +40,14 @@ function platformImage(platform: string): string {
   }
   return "/package.svg"
 }
+
+// This is a bit cursed, but this is how its accessed in the compostion api
+const { proxy } = getCurrentInstance()!;
+const dltApi = proxy!.$dltApi
+
+onMounted(() => dltApi.getTrustScore(props.package.name).then((res) => {
+  if (res !== undefined) score.value = res.toFixed(0);
+}))
 </script>
 
 <template>
@@ -46,9 +57,13 @@ function platformImage(platform: string): string {
       :title="package.platform"
       class="platform-logo"
       :src="platformImage(package.platform)"
+      @click="() => loadPackage(package.name)"
     />
     <div class="package-info">
-      <h1 class="package-name" @click="() => loadPackage(package.name)">{{ package.name }}</h1>
+      <div class="package-name-score-container">
+        <h1 class="package-name" @click="() => loadPackage(package.name)">{{ package.name }}</h1>
+        <h1> Score: {{score}} </h1>
+      </div>
       <div class="version-container">
         <div class="version" v-for="version in package.versions" @click="() => loadPackageVersion(package.name, version)">
           {{ version }}
@@ -78,6 +93,11 @@ function platformImage(platform: string): string {
   gap: 6px;
 }
 
+.package-name-score-container{
+  display: flex;
+  justify-content: space-between;
+}
+
 .version {
   padding: 4px;
   background-color: var(--va-gray);
@@ -94,6 +114,7 @@ function platformImage(platform: string): string {
 
 .package-info {
   padding-top: 8px;
+  flex-grow: 1;
 }
 
 .package-info > * {

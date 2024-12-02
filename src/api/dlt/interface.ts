@@ -49,7 +49,7 @@ export abstract class DltInterface {
 
   abstract getMetrics(): Promise<Metrics>;
 
-  abstract getTrustScore(name: string, version: string): Promise<number | undefined>;
+  abstract getTrustScore(name: string, version?: string): Promise<number | undefined>;
 
   install(app: App, config: GlobalConfig) {
     // eslint-disable-next-line no-param-reassign

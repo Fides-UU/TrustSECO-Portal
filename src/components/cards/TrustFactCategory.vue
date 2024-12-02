@@ -13,7 +13,7 @@ defineProps<{
 <template>
   <div class="category">
     <h1 class="category-child">{{ category }}</h1>
-    <h1 class="category-child" v-if="categoryScore !== undefined">Score: {{ categoryScore }}</h1>
+    <h1 class="category-child" v-if="categoryScore !== undefined">Score: {{ categoryScore.toFixed(0) }}</h1>
   </div>
   <TrustFactCard
     v-for="trustfact in trustFacts"

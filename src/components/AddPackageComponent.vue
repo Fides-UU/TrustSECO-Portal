@@ -27,25 +27,46 @@
         autocomplete
         highlight-matched-text
         :rules="[validateRequired]"
-      />
+      ></va-select>
       <va-input
         v-model="job.owner"
         :rules="[validateRequired]"
         class="flex xs6"
         label="Owner"
-      />
+      >
+        <template #append>
+          <HelpComponent title="Owner">
+            GitHub name of the person/orginisation that owns the repository
+          </HelpComponent>
+        </template>
+      </va-input>
       <va-input
         v-model="job.name"
         :rules="[validateRequired]"
         class="flex xs6"
         label="Name"
-      />
+      >
+        <template #append>
+          <HelpComponent title="Name">
+            Name of the package. <br/>
+            Note: the name in the package manager and the repository name of the package should
+            be the same, otherwise some data might not be able to get retreived.
+          </HelpComponent>
+        </template>
+      </va-input>
       <va-input
         v-model="job.release"
         class="flex xs6"
         label="Version"
         placeholder="leave empty for most recent version"
-      />
+      >
+        <template #append>
+          <HelpComponent title="Release">
+            Specific version/release of the package, should be the tag of a
+            GitHub release.
+          </HelpComponent>
+        </template>
+      </va-input>
       <div class="flex xs12">
         <va-button :loading="isLoading" type="submit" @click="addPackage">Submit</va-button>
       </div>
@@ -57,11 +78,12 @@
 import { defineComponent } from 'vue';
 import router from '@/router';
 import PopUpMessage from '@/components/PopUpMessage.vue';
+import HelpComponent from '@/components/HelpComponent.vue';
 import { getAllPlatforms } from '@/api/ApiCalls';
 
 export default defineComponent({
   name: 'add-package-component',
-  components: { PopUpMessage },
+  components: { PopUpMessage, HelpComponent },
   data() {
     return {
       showAddedModal: false,

@@ -36,9 +36,9 @@
 
 <script>
 import router from '@/router';
+import { ServerType } from '@/api';
 import Header from './Header.vue';
 import HeaderSearch from './HeaderSearch.vue';
-import { ServerType } from '@/api';
 
 export default {
   name: 'header-component',
@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       usertokens: 0,
-      server_type: ServerType.Public
+      server_type: ServerType.Public,
     };
   },
   async mounted() {

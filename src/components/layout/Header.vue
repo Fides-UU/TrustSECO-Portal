@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       usertokens: 0,
-      server_type: ServerType.Public
+      server_type: ServerType.Public,
     };
   },
   methods: {

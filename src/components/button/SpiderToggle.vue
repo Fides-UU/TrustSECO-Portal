@@ -26,7 +26,7 @@ export default defineComponent({
       isLoading: false,
       showSpiderErrorModal: false,
       modalErrorMessage: '',
-      server_type: ServerType.Public
+      server_type: ServerType.Public,
     };
   },
   async mounted() {

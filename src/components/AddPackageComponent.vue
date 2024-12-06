@@ -54,7 +54,7 @@ export default defineComponent({
   name: 'add-package-component',
   data() {
     return {
-      showAddedModal:false,
+      showAddedModal: false,
       showFieldEmpty: false,
       response: '',
       job: {
@@ -67,16 +67,15 @@ export default defineComponent({
   },
   methods: {
     async addPackage() {
-      if(this.job.platform.length>0 && this.job.owner.length>0 && this.job.name.length>0 && this.job.release.length>0){
+      if (this.job.platform.length > 0 && this.job.owner.length > 0 && this.job.name.length > 0 && this.job.release.length > 0) {
         const result = await this.$dltApi.addPackage(this.job);
-        
+
         if (typeof result === 'string') {
-          if(result=="Added jobs.") this.showAddedModal=true;
+          if (result === 'Added jobs.') this.showAddedModal = true;
         }
       } else {
-        this.showFieldEmpty=true;
+        this.showFieldEmpty = true;
       }
-      
     },
     // TODO: Move to generalized validation system
     validateRequired(value: string) {

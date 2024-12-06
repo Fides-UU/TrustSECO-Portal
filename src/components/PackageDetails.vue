@@ -69,7 +69,7 @@ export default defineComponent({
       score: 0 as number | undefined,
       // version prop is immutable so this is needed to use in a v-model
       versionLocal: this.version,
-      language: undefined as string | undefined
+      language: undefined as string | undefined,
     };
   },
   computed: {
@@ -100,7 +100,7 @@ export default defineComponent({
     } else {
       await this.updateScore();
     }
-    this.versionLocal = this.version
+    this.versionLocal = this.version;
   },
   methods: {
     selectVersion(version: string) {
@@ -114,8 +114,8 @@ export default defineComponent({
     },
     async updateScore() {
       this.score = await this.$dltApi.getTrustScore(this.name, this.version);
-      let trustfacts = await this.$dltApi.getTrustFacts(this.name, this.version);
-      this.language = trustfacts.find((fact) => fact.type === "gh_repository_language")?.value.replaceAll('"', '');
+      const trustfacts = await this.$dltApi.getTrustFacts(this.name, this.version);
+      this.language = trustfacts.find((fact) => fact.type === 'gh_repository_language')?.value.replaceAll('"', '');
     },
   },
 });

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defineProps } from 'vue';
 import { TrustFact } from '../../api';
 import TrustFactCard from './TrustFact.vue';
 
@@ -17,6 +18,7 @@ defineProps<{
   </div>
   <TrustFactCard
     v-for="trustfact in trustFacts"
+    :key="trustfact.type"
     :fact_code="trustfact.type"
     :fact_content="trustfact.value"
     :loading="isLoading"

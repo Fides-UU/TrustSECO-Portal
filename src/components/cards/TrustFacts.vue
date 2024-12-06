@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { TrustFact } from '../../api';
-import TrustFactCard from './TrustFact.vue';
 import TrustFactCategory from './TrustFactCategory.vue';
 
 interface Category {
@@ -10,7 +9,7 @@ interface Category {
   score: number,
 }
 
-let categories = [
+const categories = [
   // Technical specifications category is not included here, as the programming
   // language fact has been moved to the packageDetails component
   {
@@ -71,7 +70,7 @@ export default defineComponent({
       trustFacts: [] as TrustFact[],
       filter: '',
       isLoading: true,
-      categories: categories,
+      categories,
       scoreCategories: {} as Record<string, number>,
     };
   },
@@ -89,39 +88,37 @@ export default defineComponent({
     trustFactsWithPlaceholders(): TrustFact[] {
       if (this.trustFacts.length > 0) {
         return this.trustFacts;
-      } else {
-        // add some empty facts to show with the loading animation
-        return Array(12).fill({ type: '', value: '' });
       }
+      // add some empty facts to show with the loading animation
+      return Array(12).fill({ type: '', value: '' });
     },
     /** Filters out the correct facts for each category, and filters out any
     categories that do not contain any trustfacts */
     categoryTrustFacts(): Category[] {
-      let categorys = [] as Category[];
-      for (let category of categories) {
+      const categorys = [] as Category[];
+      /* eslint-disable-next-line no-restricted-syntax */
+      for (const category of categories) {
         // Filter only the facts the belong to this category
-        let category_facts = this.trustFacts.filter((fact: TrustFact) =>
-          category.fact_codes.includes(fact.type),
-        );
-        if (category_facts.length > 0) {
-          categorys.push({ name: category.name, trustfacts: category_facts, score: this.scoreCategories[category.name] });
+        const categoryFacts = this.trustFacts.filter((fact: TrustFact) => category.fact_codes.includes(fact.type));
+        if (categoryFacts.length > 0) {
+          categorys.push({ name: category.name, trustfacts: categoryFacts, score: this.scoreCategories[category.name] });
         }
       }
       return categorys;
-    }
+    },
   },
   methods: {
     async updateTrustFacts() {
       this.isLoading = true;
       this.trustFacts = (
         await this.$dltApi.getTrustFacts(this.name, this.version)
+      /* eslint-disable-next-line no-nested-ternary */
       ).sort((a, b) => (a.type === b.type ? 0 : a.type > b.type ? 1 : -1));
       this.isLoading = false;
       this.scoreCategories = await this.$dltApi.getTrustScoreCategories(this.name, this.version);
-    }
+    },
   },
   components: {
-    TrustFactCard,
     TrustFactCategory,
   },
 });
@@ -131,6 +128,7 @@ export default defineComponent({
   <div class="cardContainer">
     <TrustFactCategory
       v-for="category in categoryTrustFacts"
+      :key="category.name"
       :category="category.name"
       :trustFacts="category.trustfacts"
       :isLoading="isLoading"

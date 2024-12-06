@@ -25,7 +25,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-
 export default defineComponent({
   name: 'spider-toggle-button',
   data() {
@@ -34,7 +33,7 @@ export default defineComponent({
       isActive: false,
       isLoading: false,
       showSpiderErrorModal: false,
-      modalErrorMessage: "",
+      modalErrorMessage: '',
     };
   },
   async mounted() {
@@ -60,20 +59,19 @@ export default defineComponent({
       this.state = null;
       try {
         const newState = await this.$spiderApi.toggleSpider();
-        if (typeof newState === 'string' || newState instanceof String){
-          //Not succeeded
-          this.modalErrorMessage=newState;
-          this.showSpiderErrorModal=true;
-          this.isActive=false;
-        } else  {
+        if (typeof newState === 'string' || newState instanceof String) {
+          // Not succeeded
+          this.modalErrorMessage = newState;
+          this.showSpiderErrorModal = true;
+          this.isActive = false;
+        } else {
           this.isActive = newState;
         }
-        
+
         this.state = this.isActive;
-        
       } catch (e) {
-        this.modalErrorMessage=e.message;
-        this.showSpiderErrorModal=true;
+        this.modalErrorMessage = e.message;
+        this.showSpiderErrorModal = true;
         this.state = this.isActive;
         console.error('SpiderToggle.toggle', e.message);
       }

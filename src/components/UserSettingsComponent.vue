@@ -30,7 +30,7 @@
       </va-button>
     </template>
   </va-modal>
-  
+
   <va-modal
     v-model="modal.showGitHubTokenModal"
     hide-default-actions
@@ -94,7 +94,6 @@
       </va-button>
     </template>
   </va-modal>
-
 
   <div class="flex xs12">
     <va-form
@@ -190,31 +189,31 @@ export default defineComponent({
   methods: {
     async handleSubmit() {
       axios.post('http://localhost:3000/api/dlt/store-github-link', {
-        data: "https://github.com/"+this.request_data.user.gh_username.toLowerCase()+".gpg",
+        data: `https://github.com/${this.request_data.user.gh_username.toLowerCase()}.gpg`,
       }).then((response) => {
         this.modal.showGPGkeyInGitHub = !(response.data.stored_on_github);
-        
+
         axios.post('http://localhost:3000/api/spider/set-tokens', {
           github_token: this.request_data.user.gh_token,
           libraries_token: this.request_data.user.libraries_token,
-        }).then((response) => {
-          this.modal.showSavedModal=true;
+        }).then(() => {
+          this.modal.showSavedModal = true;
         }).catch((error) => {
-            console.log(error.message);
+          console.log(error.message);
         });
       }).catch((error) => {
-          console.log(error.message);
-      });            
+        console.log(error.message);
+      });
     },
     validateRequired(value: string) {
       return (value && value.length > 0) || 'Field is required';
     },
-    copyToClipboard(){      
-      this.$copyText(this.request_data.user.dlt_gpg);            
-    }
+    copyToClipboard() {
+      this.$copyText(this.request_data.user.dlt_gpg);
+    },
   },
   async mounted() {
-    this.request_data.user.gh_username = (await axios.get('http://localhost:3000/api/dlt/get-github-link')).data.slice(19).slice(0,-4);
+    this.request_data.user.gh_username = (await axios.get('http://localhost:3000/api/dlt/get-github-link')).data.slice(19).slice(0, -4);
     const { data } = await axios.get('http://localhost:3000/api/spider/get-tokens');
     this.request_data.user.gh_token = data.github_token;
     this.request_data.user.libraries_token = data.libraries_token;

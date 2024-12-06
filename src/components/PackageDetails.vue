@@ -25,23 +25,22 @@
           </span>
         </b></div>
       </div>
+      <div class="row" v-if="language">
+        <div class="flex xs4 propName">Language:</div>
+        <div class="flex xs8 propValue">{{ language }}</div>
+      </div>
       <!--      <div class="row">-->
       <!--        <div class="flex xs4 propName">Confidence rating:</div>-->
       <!--        <div class="flex xs8 propValue">TODO</div>-->
       <!--      </div>-->
-      <br/>
-      <div v-if="githubLink !== undefined">
-        <va-button :href="githubLink" flat target="_blank">
-          <va-icon name="home"/>
-          GitHub
-        </va-button>
+      <div class="row">
+        <div class="flex xs4 propName">Repo:</div>
+        <a :href="githubLink"><div class="flex xs16 propValue">{{package.owner}}/{{package.name}}</div></a>
       </div>
     </div>
     <div class="row">
       <div class="flex xs12">
-        <va-radio v-for="version in package.versions" :key="version" :option="version">
-          <va-button color="secondary" size="small" @click="selectVersion(version)">{{ version }}</va-button>
-        </va-radio>
+        <va-button-toggle focus-color="textPrimary" size="small" v-model="versionLocal" :options="package.versions.map(v=> ({'label':v, 'value':v}))"/>
       </div>
     </div>
   </div>
@@ -68,21 +67,24 @@ export default defineComponent({
     return {
       package: defaultPackage,
       score: 0 as number | undefined,
+      // version prop is immutable so this is needed to use in a v-model
+      versionLocal: this.version,
+      language: undefined as string | undefined,
     };
   },
   computed: {
-    // TODO: Add links for other Platforms and generalise
-    githubLink() {
-      if (this.package.platform !== 'github') {
-        return undefined;
-      }
-
+    githubLink(): string {
       return `https://github.com/${this.package.owner}/${this.package.name}`;
     },
   },
   watch: {
-    async version() {
+    async versionLocal(newVersion) {
       await this.updateScore();
+      this.selectVersion(newVersion);
+    },
+    async version(newVersion) {
+      await this.updateScore();
+      this.selectVersion(newVersion);
     },
   },
   async mounted() {
@@ -98,6 +100,7 @@ export default defineComponent({
     } else {
       await this.updateScore();
     }
+    this.versionLocal = this.version;
   },
   methods: {
     selectVersion(version: string) {
@@ -111,6 +114,8 @@ export default defineComponent({
     },
     async updateScore() {
       this.score = await this.$dltApi.getTrustScore(this.name, this.version);
+      const trustfacts = await this.$dltApi.getTrustFacts(this.name, this.version);
+      this.language = trustfacts.find((fact) => fact.type === 'gh_repository_language')?.value.replaceAll('"', '');
     },
   },
 });
@@ -121,20 +126,16 @@ export default defineComponent({
   text-align: right;
 }
 
-.va-radio {
-  margin: 0 !important;
-
-  .va-radio__icon {
-    display: none;
-  }
-
-  .va-radio__text {
-    margin-left: 0;
-  }
-}
-
 .va-button {
   margin: 2px;
+}
+
+.va-button--focus {
+  background-color: rgb(44, 130, 224) !important;
+}
+
+.va-button--active {
+  background-color: rgb(31, 117, 209) !important;
 }
 </style>
 

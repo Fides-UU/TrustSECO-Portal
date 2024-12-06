@@ -84,7 +84,7 @@ import PopUpMessage from '@/components/PopUpMessage.vue';
 
 export default defineComponent({
   name: 'add-miner-component',
-  components: {PopUpMessage},
+  components: { PopUpMessage },
   data() {
     return {
       // showModalCPU: false,

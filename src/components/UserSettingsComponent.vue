@@ -3,9 +3,37 @@
     Your settings have been saved
   </PopUpMessage>
 
-  <PopUpMessage v-model="modal.showGitHubProfileLinkModal" title="GitHub Username">
-    Enter your GitHub Username here. <br />
-  </PopUpMessage>
+  <va-modal
+    v-model="modal.showGitHubProfileLinkModal"
+    hide-default-actions
+    overlay-opacity="0.2"
+  >
+    <template #header>
+      <h2>GitHub Username</h2>
+    </template>
+    <div>Enter your GitHub Username here. <br /></div>
+    <template #footer>
+      <va-button @click="modal.showGitHubProfileLinkModal = false">
+        Close
+      </va-button>
+    </template>
+  </va-modal>
+
+  <va-modal
+    v-model="modal.showGitHubTokenModal"
+    hide-default-actions
+    overlay-opacity="0.2"
+  >
+    <template #header>
+      <h2>GitHub Token</h2>
+    </template>
+    <div>Follow <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">this guide</a> on how to create a personal acces token on GitHub, and paste it here.<br />You do not need to select scopes.</div>
+    <template #footer>
+      <va-button @click="modal.showGitHubTokenModal = false">
+        Close
+      </va-button>
+    </template>
+  </va-modal>
 
   <PopUpMessage v-model="modal.showGitHubTokenModal" title="GitHub Token">
     Follow <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">this guide</a> on how to create a personal acces token on GitHub, and paste it here.<br />You do not need to select scopes.

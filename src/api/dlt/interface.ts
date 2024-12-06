@@ -47,9 +47,13 @@ export abstract class DltInterface {
 
   abstract addPackage(pack: AddPackageForm): Promise<string | void>;
 
+  abstract getMostRecentVersion(pack: Package): Promise<string>;
+
   abstract getMetrics(): Promise<Metrics>;
 
   abstract getTrustScore(name: string, version?: string): Promise<number | undefined>;
+
+  abstract getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>>;
 
   install(app: App, config: GlobalConfig) {
     // eslint-disable-next-line no-param-reassign

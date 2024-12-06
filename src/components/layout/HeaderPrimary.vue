@@ -12,7 +12,7 @@
             TrustSECO</va-chip
           >
         </va-navbar-item>
-        <va-navbar-item>
+        <va-navbar-item v-if="this.$api.isPrivate()">
           <va-chip
             :to="{ name: 'SearchSECO' }"
             :color="currentSubject === 'search' ? 'dark' : '#ffffff'"

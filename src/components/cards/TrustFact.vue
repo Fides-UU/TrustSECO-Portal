@@ -1,19 +1,20 @@
 <script setup lang="ts">
+import { defineProps } from 'vue';
 import CveVulnerabilities from './CveVulnerabilities.vue';
 
 defineProps({
-  fact_code: { type: String, required: true },
-  fact_content: { type: String, required: true },
+  factCode: { type: String, required: true },
+  factContent: { type: String, required: true },
   loading: { type: Boolean, required: true },
 });
 
-let codeToName: Record<string, string> = {
+const codeToName: Record<string, string> = {
   cve_count: 'Cve count',
   cve_vulnerabilities: 'Cve vulnerabilities',
   gh_average_resolution_time: 'Average issue resolution time',
   gh_contributor_count: 'GitHub contributor count',
   gh_gitstar_ranking: 'GitHub star ranking',
-  gh_issue_ratio: 'Closed/Open issue ratio',
+  gh_issue_ratio: 'Open/Closed issue ratio',
   gh_open_issues_count: 'Open issues',
   gh_owner_stargazer_count: 'Star count of owner',
   gh_release_download_count: 'Release download count',
@@ -35,14 +36,14 @@ let codeToName: Record<string, string> = {
   vs_virus_ratio: 'Virus ratio',
 };
 
-let codeToExplanation: Record<string, string> = {
+const codeToExplanation: Record<string, string> = {
   cve_count: 'Number of CVE vulnerabilities found for this package.',
   cve_vulnerabilities: '',
   gh_average_resolution_time:
     'Average time it takes for a GitHub issue to be resolved.',
   gh_gitstar_ranking:
     'How high the repository ranks based on star count among repos with the same programming language.',
-  gh_issue_ratio: 'Ratio of closed to open GitHub issues.',
+  gh_issue_ratio: 'Ratio of open to closed GitHub issues.',
   gh_open_issues_count: 'Number of open issues.',
   gh_owner_stargazer_count:
     'Total number of Stargazers the owner of the repository has.',
@@ -74,37 +75,82 @@ let codeToExplanation: Record<string, string> = {
     'Ratio of virus found to number of links scanned. Virus are scanned for using ClamAV.',
 };
 
-function convertFactValue(fact_value: string, fact_code: string): String {
+// the amount of terms that the formatting should print
+// for example termAmount -> 1 year, 2 weeks, 3 minutes
+const termAmount = 2;
+
+// Time intervals to be usid in displaying time durations
+const timeIntervals = [
+  { name: 'year', duration: 365 * 24 * 60 * 60 },
+  { name: 'month', duration: 30.4 * 24 * 60 * 60 },
+  { name: 'week', duration: 7 * 24 * 60 * 60 },
+  { name: 'day', duration: 24 * 60 * 60 },
+  { name: 'hour', duration: 60 * 60 },
+  { name: 'minute', duration: 60 },
+  { name: 'second', duration: 1 },
+];
+
+/** Converts a duration in seconds to a pretty format.
+* There is already a built in javascript function for this, but it is not
+* supported on every browser yet. */
+function convertDuration(secs: number): string {
+  let seconds = Math.floor(secs);
+  if (seconds === 0) return '0 seconds';
+  let formatted = '';
+  for (let i = 0; i < termAmount && seconds > 0; i += 1) {
+    // Find biggest duration that fits in the amount of seconds
+    /* eslint-disable-next-line no-loop-func */
+    const maxDuration = timeIntervals.find(({ duration }) => duration <= seconds);
+    if (maxDuration === undefined) break;
+    const { name, duration } = maxDuration;
+
+    const amount = Math.floor(seconds / duration);
+    seconds %= duration;
+    // Add seperator if string isn't empty
+    if (formatted.length > 0) formatted += ', ';
+
+    let string = `${amount} ${name}`;
+    // Make plural if amount is bigger than 1
+    if (amount > 1) string += 's';
+    formatted += string;
+  }
+  return formatted;
+}
+
+function convertFactValue(factValue: string, factCode: string): string {
   let res;
-  switch (fact_code) {
+  switch (factCode) {
     case 'gh_repository_language':
-      res = fact_value.replaceAll('"', '');
+      res = factValue.replaceAll('"', '');
       break;
     case 'lib_first_release_date':
-    case 'lib_latest_release_date':
-      let date = Date.parse(fact_value.replaceAll('"', ''));
+    case 'lib_latest_release_date': {
+      const date = Date.parse(factValue.replaceAll('"', ''));
       res = new Intl.DateTimeFormat('en-GB', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       }).format(date);
       break;
+    }
     case 'so_popularity':
     case 'vs_virus_ration':
-    case 'gh_issue_ratio':
-      let num = parseFloat(fact_value);
-      res = num.toFixed(3).toString();
+    case 'gh_issue_ratio': {
+      const num = parseFloat(factValue);
+      res = num.toFixed(3);
       break;
+    }
     case 'gh_average_resolution_time':
-    case 'lib_release_frequency':
-      let num2 = parseFloat(fact_value);
-      res = num2.toFixed(0).toString();
+    case 'lib_release_frequency': {
+      const num2 = parseFloat(factValue);
+      res = convertDuration(num2);
       break;
+    }
     case 'cve_vulnerabilities':
       res = '';
       break;
     default:
-      res = fact_value;
+      res = factValue;
       break;
   }
   return res;
@@ -113,20 +159,20 @@ function convertFactValue(fact_value: string, fact_code: string): String {
 
 <template>
   <div class="card" v-if="!loading">
-    <h2 class="fact-name card-child">{{ codeToName[fact_code] }}</h2>
-    <p class="card-child fact-value" v-if="fact_code !== 'cve_vulnerabilities'">
-      {{ convertFactValue(fact_content, fact_code) }}
+    <h2 class="fact-name card-child">{{ codeToName[factCode] }}</h2>
+    <p class="card-child fact-value" v-if="factCode !== 'cve_vulnerabilities'">
+      {{ convertFactValue(factContent, factCode) }}
     </p>
     <div class="seperator" />
     <p
       class="card-child explanation"
-      v-if="fact_code !== 'cve_vulnerabilities'"
+      v-if="factCode !== 'cve_vulnerabilities'"
     >
-      {{ codeToExplanation[fact_code] }}
+      {{ codeToExplanation[factCode] }}
     </p>
     <CveVulnerabilities
-      v-if="fact_code === 'cve_vulnerabilities'"
-      :cve_data="JSON.parse(fact_content)"
+      v-if="factCode === 'cve_vulnerabilities'"
+      :cve_data="JSON.parse(factContent)"
     />
   </div>
   <div class="card card-loading" v-if="loading">

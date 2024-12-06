@@ -170,7 +170,11 @@ export default class DltMock extends DltInterface {
 
   async addPackage(pack: AddPackageForm) {
     await fakeDelay();
-    return 'Success';
+    return 'Added jobs.';
+  }
+
+  async getMostRecentVersion(pack: Package): Promise<string> {
+      return "v7.8.9";
   }
 
   async getMetrics() {
@@ -180,9 +184,21 @@ export default class DltMock extends DltInterface {
     };
   }
 
+  randomScore() {
+    return Math.floor(100 * Math.random());
+  }
+
   async getTrustScore(name: string, version: string) {
-    const maxScore = 100;
-    return random_int(maxScore);
+    return this.randomScore();
+  }
+
+  async getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>> {
+    return {
+      "Security": this.randomScore(),
+      "Project Health and Maintenance": this.randomScore(),
+      "Dependencies and Ecosystem": this.randomScore(),
+      "Community and Popularity": this.randomScore()
+    }
   }
 }
 

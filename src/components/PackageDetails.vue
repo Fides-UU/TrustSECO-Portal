@@ -25,16 +25,17 @@
           </span>
         </b></div>
       </div>
+      <div class="row" v-if="language">
+        <div class="flex xs4 propName">Language:</div>
+        <div class="flex xs8 propValue">{{ language }}</div>
+      </div>
       <!--      <div class="row">-->
       <!--        <div class="flex xs4 propName">Confidence rating:</div>-->
       <!--        <div class="flex xs8 propValue">TODO</div>-->
       <!--      </div>-->
-      <br/>
-      <div v-if="githubLink !== undefined">
-        <va-button :href="githubLink" flat target="_blank">
-          <va-icon name="home"/>
-          GitHub
-        </va-button>
+      <div class="row">
+        <div class="flex xs4 propName">Repo:</div>
+        <a :href="githubLink"><div class="flex xs16 propValue">{{package.owner}}/{{package.name}}</div></a>
       </div>
     </div>
     <div class="row">
@@ -67,16 +68,12 @@ export default defineComponent({
       package: defaultPackage,
       score: 0 as number | undefined,
       // version prop is immutable so this is needed to use in a v-model
-      versionLocal: this.version
+      versionLocal: this.version,
+      language: undefined as string | undefined,
     };
   },
   computed: {
-    // TODO: Add links for other Platforms and generalise
-    githubLink() {
-      if (this.package.platform !== 'github') {
-        return undefined;
-      }
-
+    githubLink(): string {
       return `https://github.com/${this.package.owner}/${this.package.name}`;
     },
   },
@@ -103,7 +100,7 @@ export default defineComponent({
     } else {
       await this.updateScore();
     }
-    this.versionLocal = this.version
+    this.versionLocal = this.version;
   },
   methods: {
     selectVersion(version: string) {
@@ -117,6 +114,8 @@ export default defineComponent({
     },
     async updateScore() {
       this.score = await this.$dltApi.getTrustScore(this.name, this.version);
+      const trustfacts = await this.$dltApi.getTrustFacts(this.name, this.version);
+      this.language = trustfacts.find((fact) => fact.type === 'gh_repository_language')?.value.replaceAll('"', '');
     },
   },
 });

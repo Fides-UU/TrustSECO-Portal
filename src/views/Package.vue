@@ -5,7 +5,7 @@ import TrustFacts from '@/components/cards/TrustFacts.vue';
 export default {
   components: {
     PackageDetailsComponent,
-    TrustFacts
+    TrustFacts,
   },
   name: 'package-view',
   props: {

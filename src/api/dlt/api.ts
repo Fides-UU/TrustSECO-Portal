@@ -128,6 +128,12 @@ export default class DltApi extends DltInterface {
     return data;
   }
 
+  async getMostRecentVersion(pack: Package) {
+    const { data } = await axios.post(this.#getLink('get-most-recent-version'), pack);
+    console.log(data);
+    return data;
+  }
+
   async getMetrics() {
     const { data } = await axios.get(this.#getLink('metrics'));
     return parseMetrics(data);
@@ -136,6 +142,11 @@ export default class DltApi extends DltInterface {
   async getTrustScore(name: string, version?: string) {
     const { data } = await axios.get(this.#getLink(`package/${name}/trust-score/${version ?? ''}`));
     return (typeof data === 'number' ? data : undefined);
+  }
+
+  async getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>> {
+    const { data } = await axios.get(this.#getLink(`package/${name}/trust-score-categories/${version}`));
+    return data;
   }
 
   #getLink(to: string) {

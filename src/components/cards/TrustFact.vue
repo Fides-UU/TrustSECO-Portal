@@ -230,7 +230,7 @@ function convertFactValue(factValue: string, factCode: string): string {
   font-style: italic;
   font-size: 0.9em;
   height: 87px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .seperator {

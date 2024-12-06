@@ -2,18 +2,18 @@
   <va-card>
     <va-card-title>View Packages</va-card-title>
     <va-card-content>
-      <packages-table-component></packages-table-component>
+      <Packages></Packages>
     </va-card-content>
   </va-card>
 </template>
 
 <script>
-import PackagesTableComponent from '@/components/tables/Packages.vue';
+import Packages from '@/components/package/Packages.vue';
 
 export default {
   name: 'packages-view',
   components: {
-    PackagesTableComponent,
+    Packages,
   },
 };
 </script>

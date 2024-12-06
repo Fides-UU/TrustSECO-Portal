@@ -51,7 +51,7 @@ export abstract class DltInterface {
 
   abstract getMetrics(): Promise<Metrics>;
 
-  abstract getTrustScore(name: string, version: string): Promise<number | undefined>;
+  abstract getTrustScore(name: string, version?: string): Promise<number | undefined>;
 
   abstract getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>>;
 

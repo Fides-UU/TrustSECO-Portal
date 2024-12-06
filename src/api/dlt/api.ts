@@ -128,6 +128,12 @@ export default class DltApi extends DltInterface {
     return data;
   }
 
+  async getMostRecentVersion(pack: Package) {
+    const { data } = await axios.post(this.#getLink('get-most-recent-version'), pack);
+    console.log(data);
+    return data;
+  }
+
   async getMetrics() {
     const { data } = await axios.get(this.#getLink('metrics'));
     return parseMetrics(data);

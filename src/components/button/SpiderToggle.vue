@@ -5,28 +5,19 @@
     {{ getStatusText }}
   </va-switch>
 
-   <va-modal
-    v-model="showSpiderErrorModal"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>Error: couldn't start spider</h2>
-    </template>
-    <div>{{ modalErrorMessage }}</div>
-    <template #footer>
-      <va-button @click="showSpiderErrorModal = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showSpiderErrorModal" title="Error: couldn't start spider">
+    {{ modalErrorMessage }}
+  </PopUpMessage>
+
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import PopUpMessage from '@/components/PopUpMessage.vue';
 
 export default defineComponent({
   name: 'spider-toggle-button',
+  components: { PopUpMessage },
   data() {
     return {
       state: null as boolean | null,

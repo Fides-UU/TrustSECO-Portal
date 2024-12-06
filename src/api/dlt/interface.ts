@@ -53,6 +53,8 @@ export abstract class DltInterface {
 
   abstract getTrustScore(name: string, version: string): Promise<number | undefined>;
 
+  abstract getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>>;
+
   install(app: App, config: GlobalConfig) {
     // eslint-disable-next-line no-param-reassign
     app.config.globalProperties.$dltApi = this;

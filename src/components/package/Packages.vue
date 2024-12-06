@@ -7,7 +7,7 @@
   <div class="loading-container" v-if="isLoading">
     <VaIcon name="loop" size="4em" spin />
   </div>
-  <PackageComponent v-for="pack in filteredPackages" :package="pack"></PackageComponent>
+  <PackageComponent v-for="pack in filteredPackages" :package="pack" :key="pack"></PackageComponent>
 </template>
 
 <script lang="ts">

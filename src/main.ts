@@ -6,9 +6,11 @@ import {
   DltInterface,
   SearchInterface,
   SpiderInterface,
+  ApiInterface,
   dltApi,
   searchApi,
   spiderApi,
+  api
 } from './api';
 
 import router from './router';
@@ -18,6 +20,7 @@ declare module '@vue/runtime-core' {
     $dltApi: DltInterface;
     $spiderApi: SpiderInterface;
     $searchApi: SearchInterface;
+    $api: ApiInterface;
   }
 }
 
@@ -26,6 +29,7 @@ const app = createApp(App)
   .use(router)
   .use(dltApi)
   .use(spiderApi)
+  .use(api)
   .use(searchApi)
   .use(copyText);
 

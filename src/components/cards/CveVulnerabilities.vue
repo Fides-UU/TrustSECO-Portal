@@ -1,15 +1,24 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, defineProps } from 'vue';
 
-let props = defineProps<{ cve_data: any[] }>();
+interface CveData {
+  CVE_ID: string,
+  CVE_score: number,
+  CVE_affected_version_start_type:string,
+  CVE_affected_version_start:string,
+  CVE_affected_version_end_type:string,
+  CVE_affected_version_end:string
+}
 
-const sorted_cves = computed(() => props.cve_data.sort((c1, c2)=> c1.CVE_ID < c2.CVE_ID ? 1 : -1))
+const props = defineProps<{ cve_data: CveData[] }>();
+
+const sortedCves = computed(() => props.cve_data.slice().sort((c1, c2) => (c1.CVE_ID < c2.CVE_ID ? 1 : -1)));
 
 </script>
 
 <template>
   <div class="cve-grid">
-    <template v-for="cve in sorted_cves">
+    <template v-for="cve in sortedCves" :key="cve.CVE_ID">
       <div class="cve-id">
         <a :href="`https://nvd.nist.gov/vuln/detail/${cve.CVE_ID}`" target="_blank">{{ cve.CVE_ID }}</a>
       </div>
@@ -50,7 +59,8 @@ const sorted_cves = computed(() => props.cve_data.sort((c1, c2)=> c1.CVE_ID < c2
 
 .cve-id{
   grid-column: 1/3;
-  padding-left: 1em;
+  padding-left: 8px;
+  white-space: nowrap;
 }
 
 .cve-start {

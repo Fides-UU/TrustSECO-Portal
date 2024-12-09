@@ -8,14 +8,34 @@ import {
   Package,
 } from '@/api/dlt/interface';
 
+function random_int(max: number): number {
+  return Math.floor(Math.random() * max);
+}
+
+let platforms = [
+    "CRAN",
+    "Go",
+    "Maven",
+    "NPM",
+    "NuGet",
+    "PyPi",
+]
+
 export default class DltMock extends DltInterface {
   async getPackages() {
     await fakeDelay();
     const packages: Package[] = [];
     for (let i = 0; i < 100; i += 1) {
+      const versions: string[] = [];
+      const amount = random_int(30);
+      for (let j = 0; j < amount; j += 1) {
+        versions[j] = `${j}.${j}.${j}`;
+      }
       packages[i] = {
-        ...defaultPackage,
         name: `Package ${i}`,
+        versions: versions,
+        platform: platforms[random_int(platforms.length)],
+        owner: 'secureSECO'
       };
     }
     packages[49] = {
@@ -570,9 +590,21 @@ export default class DltMock extends DltInterface {
     };
   }
 
+  randomScore() {
+    return Math.floor(100 * Math.random());
+  }
+
   async getTrustScore(name: string, version: string) {
-    const maxScore = 100 * (name.length + version.length);
-    return Math.floor(maxScore * Math.random());
+    return this.randomScore();
+  }
+
+  async getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>> {
+    return {
+      "Security": this.randomScore(),
+      "Project Health and Maintenance": this.randomScore(),
+      "Dependencies and Ecosystem": this.randomScore(),
+      "Community and Popularity": this.randomScore()
+    }
   }
 }
 

@@ -20,8 +20,9 @@ const categories = [
       'gh_release_download_count',
       'so_popularity',
       'gh_contributor_count',
-      'lib_contrubtor_count',
+      'lib_contributor_count',
       'lib_sourcerank',
+      'gh_total_download_count'
     ],
   },
   {
@@ -85,13 +86,6 @@ export default defineComponent({
     }
   },
   computed: {
-    trustFactsWithPlaceholders(): TrustFact[] {
-      if (this.trustFacts.length > 0) {
-        return this.trustFacts;
-      }
-      // add some empty facts to show with the loading animation
-      return Array(12).fill({ type: '', value: '' });
-    },
     /** Filters out the correct facts for each category, and filters out any
     categories that do not contain any trustfacts */
     categoryTrustFacts(): Category[] {
@@ -104,6 +98,14 @@ export default defineComponent({
           categorys.push({ name: category.name, trustfacts: categoryFacts, score: this.scoreCategories[category.name] });
         }
       }
+      // If all categories are empty and facts are still loading fill with placeholder
+      if (categorys.length === 0 && this.isLoading){
+        return [{
+            name: "",
+            trustfacts: Array(12).fill({ type: '', value: '' }),
+            score: 0,
+        }]
+      }
       return categorys;
     },
   },
@@ -114,8 +116,8 @@ export default defineComponent({
         await this.$dltApi.getTrustFacts(this.name, this.version)
       /* eslint-disable-next-line no-nested-ternary */
       ).sort((a, b) => (a.type === b.type ? 0 : a.type > b.type ? 1 : -1));
-      this.isLoading = false;
       this.scoreCategories = await this.$dltApi.getTrustScoreCategories(this.name, this.version);
+      this.isLoading = false;
     },
   },
   components: {
@@ -125,6 +127,14 @@ export default defineComponent({
 </script>
 
 <template>
+  <va-card v-if="categoryTrustFacts.length === 0">
+    <va-card-title>No known facts</va-card-title>
+
+    <va-card-content>
+      <p> There are no known facts for this package and version </p>
+      <package-details-component ref="packageDetails" :name="name" :version="version" />
+    </va-card-content>
+  </va-card>
   <div class="cardContainer">
     <TrustFactCategory
       v-for="category in categoryTrustFacts"

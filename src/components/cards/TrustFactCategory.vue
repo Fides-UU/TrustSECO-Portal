@@ -12,7 +12,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="category">
+  <div class="category" v-if="!isLoading">
     <h1 class="category-child">{{ category }}</h1>
     <h1 class="category-child" v-if="categoryScore !== undefined">Score: {{ categoryScore.toFixed(0) }}</h1>
   </div>

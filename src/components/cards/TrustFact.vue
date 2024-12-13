@@ -3,8 +3,8 @@ import { defineProps } from 'vue';
 import CveVulnerabilities from './CveVulnerabilities.vue';
 
 defineProps({
-  factCode: { type: String, required: true },
-  factContent: { type: String, required: true },
+  fact_code: { type: String, required: true },
+  fact_content: { type: String, required: true },
   loading: { type: Boolean, required: true },
 });
 
@@ -75,10 +75,6 @@ const codeToExplanation: Record<string, string> = {
     'Ratio of virus found to number of links scanned. Virus are scanned for using ClamAV.',
 };
 
-// the amount of terms that the formatting should print
-// for example termAmount -> 1 year, 2 weeks, 3 minutes
-const termAmount = 2;
-
 // Time intervals to be usid in displaying time durations
 const timeIntervals = [
   { name: 'year', duration: 365 * 24 * 60 * 60 },
@@ -90,6 +86,10 @@ const timeIntervals = [
   { name: 'second', duration: 1 },
 ];
 
+// the amount of terms that the formatting should print
+// for example termAmount -> 1 year, 2 weeks, 3 minutes
+const termAmount = 2;
+
 /** Converts a duration in seconds to a pretty format.
 * There is already a built in javascript function for this, but it is not
 * supported on every browser yet. */
@@ -99,8 +99,8 @@ function convertDuration(secs: number): string {
   let formatted = '';
   for (let i = 0; i < termAmount && seconds > 0; i += 1) {
     // Find biggest duration that fits in the amount of seconds
-    /* eslint-disable-next-line no-loop-func */
-    const maxDuration = timeIntervals.find(({ duration }) => duration <= seconds);
+    const seconds2 = seconds; // to fix no-loop-func eslint error
+    const maxDuration = timeIntervals.find(({ duration }) => duration <= seconds2);
     if (maxDuration === undefined) break;
     const { name, duration } = maxDuration;
 
@@ -124,7 +124,8 @@ function convertFactValue(factValue: string, factCode: string): string {
       res = factValue.replaceAll('"', '');
       break;
     case 'lib_first_release_date':
-    case 'lib_latest_release_date': {
+    case 'lib_latest_release_date':
+    {
       const date = Date.parse(factValue.replaceAll('"', ''));
       res = new Intl.DateTimeFormat('en-GB', {
         year: 'numeric',
@@ -135,13 +136,15 @@ function convertFactValue(factValue: string, factCode: string): string {
     }
     case 'so_popularity':
     case 'vs_virus_ration':
-    case 'gh_issue_ratio': {
+    case 'gh_issue_ratio':
+    {
       const num = parseFloat(factValue);
       res = num.toFixed(3);
       break;
     }
     case 'gh_average_resolution_time':
-    case 'lib_release_frequency': {
+    case 'lib_release_frequency':
+    {
       const num2 = parseFloat(factValue);
       res = convertDuration(num2);
       break;
@@ -159,20 +162,20 @@ function convertFactValue(factValue: string, factCode: string): string {
 
 <template>
   <div class="card" v-if="!loading">
-    <h2 class="fact-name card-child">{{ codeToName[factCode] }}</h2>
-    <p class="card-child fact-value" v-if="factCode !== 'cve_vulnerabilities'">
-      {{ convertFactValue(factContent, factCode) }}
+    <h2 class="fact-name card-child">{{ codeToName[fact_code] }}</h2>
+    <p class="card-child fact-value" v-if="fact_code !== 'cve_vulnerabilities'">
+      {{ convertFactValue(fact_content, fact_code) }}
     </p>
     <div class="seperator" />
     <p
       class="card-child explanation"
-      v-if="factCode !== 'cve_vulnerabilities'"
+      v-if="fact_code !== 'cve_vulnerabilities'"
     >
-      {{ codeToExplanation[factCode] }}
+      {{ codeToExplanation[fact_code] }}
     </p>
     <CveVulnerabilities
-      v-if="factCode === 'cve_vulnerabilities'"
-      :cve_data="JSON.parse(factContent)"
+      v-if="fact_code === 'cve_vulnerabilities'"
+      :cve_data="JSON.parse(fact_content)"
     />
   </div>
   <div class="card card-loading" v-if="loading">

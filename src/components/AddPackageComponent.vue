@@ -103,7 +103,7 @@ export default defineComponent({
         'Conda', 'Hackage', 'Hex', 'Meteor', 'Homebrew', 'Puppet', 'Carthage',
         'SwiftPM', 'Julia', 'Elm', 'Dub', 'Racket', 'Nimble', 'Haxelib',
         'PureScript', 'Alcatraz', 'Inqlude',
-      ],// stand in value before the request to libraries.io finishes
+      ], // stand in value before the request to libraries.io finishes
     };
   },
   methods: {
@@ -132,13 +132,13 @@ export default defineComponent({
           this.showAlreadyAdded = true;
         } else {
           // ledger only accepts lower case platform names
-          const job_copy = {
+          const jobCopy = {
             platform: this.job.platform.toLowerCase(),
             owner: this.job.owner.toLowerCase(),
             name: this.job.name.toLowerCase(),
-            release: this.job.release
-          }
-          const result = await this.$dltApi.addPackage(job_copy);
+            release: this.job.release,
+          };
+          const result = await this.$dltApi.addPackage(jobCopy);
 
           if (typeof result === 'string') {
             if (result === 'Added jobs.') this.showAddedModal = true;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineProps } from 'vue';
 import PopUpMessage from '@/components/PopUpMessage.vue';
 
 defineProps<{ title: string }>();

@@ -9,7 +9,7 @@ let platform_cached: string[] | null = null;
 export async function getAllPlatforms(): Promise<string[]|null> {
   if (platform_cached === null) {
     try {
-      const { data } = await librariesApiCall("platform");
+      const { data } = await librariesApiCall("platforms");
       const platforms = data.map((platform: any) => platform.name);
       platform_cached = platforms;
       return platforms;

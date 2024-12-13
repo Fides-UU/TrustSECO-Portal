@@ -101,8 +101,7 @@ export default defineComponent({
       axios.post('http://localhost:3000/api/dlt/store-github-link', {
         data: `https://github.com/${this.request_data.user.gh_username.toLowerCase()}.gpg`,
       }).then((response) => {
-        if (!response.data.stored_on_github)
-        {
+        if (!response.data.stored_on_github) {
           this.modal.showGPGkeyInGitHub = true;
           return;
         }
@@ -111,9 +110,9 @@ export default defineComponent({
           github_token: this.request_data.user.gh_token,
           libraries_token: this.request_data.user.libraries_token,
         }).then(() => {
-            this.modal.showSavedModal = true;
-          }).catch((error) => {
-            console.log(error.message);
+          this.modal.showSavedModal = true;
+        }).catch((error) => {
+          console.log(error.message);
         });
       }).catch((error) => {
         console.log(error.message);

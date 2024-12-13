@@ -44,7 +44,7 @@ const sortedCves = computed(() => props.cve_data.slice().sort((c1, c2) => (c1.CV
         />
       </svg>
       <div class="cve-end">{{ cve.CVE_affected_version_end }}</div>
-      <div class="seperator" v-if="cve !== cve_data.at(-1)"/>
+      <div class="seperator" v-if="cve !== sortedCves.at(-1)"/>
     </template>
   </div>
 </template>
@@ -53,11 +53,11 @@ const sortedCves = computed(() => props.cve_data.slice().sort((c1, c2) => (c1.CV
 .cve-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 124px;
 }
 
-.cve-id{
+.cve-id {
   grid-column: 1/3;
   padding-left: 8px;
   white-space: nowrap;

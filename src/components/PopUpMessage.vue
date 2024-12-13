@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { defineModel, defineProps } from 'vue';
+import { defineModel, defineProps, defineEmits } from 'vue';
+
 defineProps<{ title: string }>();
 const enabled = defineModel<boolean>();
 defineEmits(['button-clicked']);

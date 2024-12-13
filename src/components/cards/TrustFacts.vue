@@ -22,7 +22,7 @@ const categories = [
       'gh_contributor_count',
       'lib_contributor_count',
       'lib_sourcerank',
-      'gh_total_download_count'
+      'gh_total_download_count',
     ],
   },
   {
@@ -99,12 +99,12 @@ export default defineComponent({
         }
       }
       // If all categories are empty and facts are still loading fill with placeholder
-      if (categorys.length === 0 && this.isLoading){
+      if (categorys.length === 0 && this.isLoading) {
         return [{
-            name: "",
-            trustfacts: Array(12).fill({ type: '', value: '' }),
-            score: 0,
-        }]
+          name: '',
+          trustfacts: Array(12).fill({ type: '', value: '' }),
+          score: 0,
+        }];
       }
       return categorys;
     },

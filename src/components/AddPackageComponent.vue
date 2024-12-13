@@ -17,30 +17,56 @@
 
   <va-form>
     <div class="row">
-      <va-input
+      <va-select
         v-model="job.platform"
-        :rules="[validateRequired]"
-        class="flex xs6"
+        v-model:search="autoCompleteSearchValue"
+        class="col-span-1 flex xs6"
         label="Platform"
-      />
+        placeholder="Type or select platform"
+        :options="platform_options"
+        autocomplete
+        highlight-matched-text
+        :rules="[validateRequired]"
+      ></va-select>
       <va-input
         v-model="job.owner"
         :rules="[validateRequired]"
         class="flex xs6"
         label="Owner"
-      />
+      >
+        <template #append>
+          <HelpComponent title="Owner">
+            GitHub name of the person/orginisation that owns the repository
+          </HelpComponent>
+        </template>
+      </va-input>
       <va-input
         v-model="job.name"
         :rules="[validateRequired]"
         class="flex xs6"
         label="Name"
-      />
+      >
+        <template #append>
+          <HelpComponent title="Name">
+            Name of the package. <br/>
+            Note: the name in the package manager and the repository name of the package should
+            be the same, otherwise some data might not be able to get retreived.
+          </HelpComponent>
+        </template>
+      </va-input>
       <va-input
         v-model="job.release"
         class="flex xs6"
         label="Version"
         placeholder="leave empty for most recent version"
-      />
+      >
+        <template #append>
+          <HelpComponent title="Release">
+            Specific version/release of the package, should be the tag of a
+            GitHub release.
+          </HelpComponent>
+        </template>
+      </va-input>
       <div class="flex xs12">
         <va-button :loading="isLoading" type="submit" @click="addPackage">Submit</va-button>
       </div>
@@ -52,10 +78,12 @@
 import { defineComponent } from 'vue';
 import router from '@/router';
 import PopUpMessage from '@/components/PopUpMessage.vue';
+import HelpComponent from '@/components/HelpComponent.vue';
+import { getAllPlatforms } from '@/api/ApiCalls';
 
 export default defineComponent({
   name: 'add-package-component',
-  components: { PopUpMessage },
+  components: { PopUpMessage, HelpComponent },
   data() {
     return {
       showAddedModal: false,
@@ -69,6 +97,13 @@ export default defineComponent({
         name: '',
         release: '',
       },
+      platform_options: [
+        'NPM', 'Maven', 'Pypi', 'NuGet', 'Go', 'Packagist', 'Rubygems',
+        'Cargo', 'CocoaPods', 'Bower', 'Pub', 'CPAN', 'CRAN', 'Clojars',
+        'Conda', 'Hackage', 'Hex', 'Meteor', 'Homebrew', 'Puppet', 'Carthage',
+        'SwiftPM', 'Julia', 'Elm', 'Dub', 'Racket', 'Nimble', 'Haxelib',
+        'PureScript', 'Alcatraz', 'Inqlude',
+      ], // stand in value before the request to libraries.io finishes
     };
   },
   methods: {
@@ -96,7 +131,14 @@ export default defineComponent({
         if (pack.versions.includes(this.job.release)) {
           this.showAlreadyAdded = true;
         } else {
-          const result = await this.$dltApi.addPackage(this.job);
+          // ledger only accepts lower case platform names
+          const jobCopy = {
+            platform: this.job.platform.toLowerCase(),
+            owner: this.job.owner.toLowerCase(),
+            name: this.job.name.toLowerCase(),
+            release: this.job.release,
+          };
+          const result = await this.$dltApi.addPackage(jobCopy);
 
           if (typeof result === 'string') {
             if (result === 'Added jobs.') this.showAddedModal = true;
@@ -120,6 +162,12 @@ export default defineComponent({
         },
       });
     },
+  },
+  created() {
+    // replace the stand in with the actual request to libraries.io
+    getAllPlatforms().then((plats) => {
+      if (plats !== null) this.platform_options = plats;
+    });
   },
 });
 </script>

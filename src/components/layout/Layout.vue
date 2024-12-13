@@ -30,13 +30,13 @@ export default {
 
   &__content {
     display: flex;
-    height: calc(100vh - 4rem - 1px);
+    height: calc(100vh - 8.13rem - 1px);
     flex: 1;
   }
 
   &__page {
     flex-grow: 2;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 }
 </style>

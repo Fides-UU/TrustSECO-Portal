@@ -56,6 +56,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .va-data-table {
   // The full viewport - .app__navbar height - .layout padding - previous .va-card height/margin - .va-card__* padding - .va-card__title font-size - filter input height - 2px (idk)
-  max-height: calc(100vh - 4.0625rem - 2 * 1.5rem - 162px - 1.5rem - 4 * var(--va-card-padding) - 0.625rem - var(--va-input-min-height) - 2px);
+  max-height: calc(100vh - 4.0625rem * 2 - 2 * 1.5rem - 162px - 1.5rem - 4 * var(--va-card-padding) - 0.625rem - var(--va-input-min-height) - 2px);
 }
 </style>

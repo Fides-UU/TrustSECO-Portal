@@ -1,5 +1,6 @@
 <script setup lang="ts">
-/* eslint-disable no-undef */
+import { defineModel, defineProps, defineEmits } from 'vue';
+
 defineProps<{ title: string }>();
 const enabled = defineModel<boolean>();
 defineEmits(['button-clicked']);

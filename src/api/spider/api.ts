@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { SpiderInterface } from '@/api/spider/interface';
+import { SpiderInterface, TokensResult } from '@/api/spider/interface';
 import axios, { AxiosResponse } from 'axios';
 
 export default class SpiderApi extends SpiderInterface {
@@ -35,6 +35,11 @@ export default class SpiderApi extends SpiderInterface {
         throw e;
       }
     }
+  }
+
+  async getTokens(): Promise<TokensResult> {
+      const {data} = await axios.get(this.#getLink('get-tokens'));
+      return data
   }
 
   #getLink(to: string) {

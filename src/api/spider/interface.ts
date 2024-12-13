@@ -1,12 +1,20 @@
 import { App } from 'vue';
 import { GlobalConfig } from 'vuestic-ui';
 
+export interface TokensResult {
+  github_token?: string|null,
+  libraries_token?: string|null
+}
+
 export abstract class SpiderInterface {
   isActive = false;
 
   abstract getSpiderStatus(): Promise<boolean>;
 
   abstract toggleSpider(targetState?: boolean): Promise<boolean>;
+
+  /** Gets the api tokens from the spider */
+  abstract getTokens(): Promise<TokensResult>;
 
   install(app: App, config: GlobalConfig) {
     // eslint-disable-next-line no-param-reassign

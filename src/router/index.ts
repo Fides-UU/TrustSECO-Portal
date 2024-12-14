@@ -48,9 +48,27 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
       },
       {
-        path: 'add-job/',
-        name: 'Add Job',
-        component: () => import('@/views/AddJob.vue'),
+        path: 'add-package/',
+        name: 'Add Package',
+        component: () => import('@/views/AddPackage.vue'),
+        props: true,
+      },
+      {
+        path: 'search/',
+        name: 'SearchSECO',
+        component: () => import('@/views/search/Miners.vue'),
+        props: true,
+      },
+      {
+        path: 'search/add-miner/',
+        name: 'SearchSECO Add Miner',
+        component: () => import('@/views/search/AddMiner.vue'),
+        props: true,
+      },
+      {
+        path: 'search/miner/:id',
+        name: 'SearchSECO Miner',
+        component: () => import('@/views/search/Miner.vue'),
         props: true,
       },
     ],
@@ -64,3 +82,6 @@ const router = createRouter({
 });
 
 export default router;
+
+/* This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) */

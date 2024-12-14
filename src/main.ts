@@ -1,32 +1,30 @@
 import dotenv from 'dotenv';
 import { createApp } from 'vue';
 import { createVuestic } from 'vuestic-ui';
-import copyText from "@meforma/vue-copy-to-clipboard";
-import {
-  DltInterface, SpiderInterface, dltApi, spiderApi,
-} from './api';
+import copyText from '@meforma/vue-copy-to-clipboard';
 import App from './App.vue';
+import {
+  DltInterface,
+  SearchInterface,
+  SpiderInterface,
+  ApiInterface,
+  dltApi,
+  searchApi,
+  spiderApi,
+  api
+} from './api';
 
 import router from './router';
 
 dotenv.config();
 process.env.HOST ??= 'localhost:3000';
 
-// Create a fake asynchronous delay
-// Useful for testing loading states and such
-const fakeDelay = async (delay = 2000) => {
-  if (import.meta.env.MODE === 'development') {
-    await new Promise((resolve) => {
-      setTimeout(resolve, delay);
-    });
-  }
-};
-
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $dltApi: DltInterface;
     $spiderApi: SpiderInterface;
-    $fakeDelay: typeof fakeDelay,
+    $searchApi: SearchInterface;
+    $api: ApiInterface;
   }
 }
 
@@ -35,8 +33,11 @@ const app = createApp(App)
   .use(router)
   .use(dltApi)
   .use(spiderApi)
+  .use(api)
+  .use(searchApi)
   .use(copyText);
 
-app.config.globalProperties.$fakeDelay = fakeDelay;
-
 app.mount('#app');
+
+/* This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) */

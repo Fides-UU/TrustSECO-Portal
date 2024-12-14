@@ -10,7 +10,7 @@ export interface Package {
 
 export interface TrustFact {
   type: string,
-  value: number,
+  value: string,
 }
 
 export interface Job {
@@ -21,7 +21,7 @@ export interface Job {
   bounty: number,
 }
 
-export interface JobForm {
+export interface AddPackageForm {
   platform: string,
   owner: string,
   name: string,
@@ -39,17 +39,21 @@ export abstract class DltInterface {
 
   abstract getPackage(name: string): Promise<Package>;
 
-  abstract getTrustFacts(name: string): Promise<TrustFact[]>;
+  abstract getTrustFacts(name: string, version: string): Promise<TrustFact[]>;
 
   abstract getDownloadLink(): Promise<string>;
 
   abstract getJobs(): Promise<Job[]>;
 
-  abstract addJob(job: JobForm): Promise<string | void>;
+  abstract addPackage(pack: AddPackageForm): Promise<string | void>;
+
+  abstract getMostRecentVersion(pack: Package): Promise<string>;
 
   abstract getMetrics(): Promise<Metrics>;
 
-  abstract getTrustScore(name: string, version: string): Promise<number>;
+  abstract getTrustScore(name: string, version?: string): Promise<number | undefined>;
+
+  abstract getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>>;
 
   install(app: App, config: GlobalConfig) {
     // eslint-disable-next-line no-param-reassign
@@ -66,9 +70,9 @@ export const defaultPackage: Package = {
 
 export const defaultJob: Job = {
   id: 0,
-  package: 'Portal',
-  version: 'v1.2.3',
-  fact: 'stars',
+  package: '',
+  version: '',
+  fact: '',
   bounty: 1000,
 };
 
@@ -77,3 +81,6 @@ export const defaultMetrics: Metrics = {
   blockheight: 0,
   nodes: 0,
 };
+
+/* This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) */

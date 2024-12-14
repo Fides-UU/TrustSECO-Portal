@@ -1,24 +1,20 @@
 <template>
-  <div class="row">
-    <div class="flex xs12">
-      <va-card>
-        <va-card-title>Search Package</va-card-title>
-        <va-card-content>
-          <va-select
-            v-model="selected"
-            :loading="isLoading"
-            :options="packages"
-            class="mb-4"
-            label="Search package name"
-            searchable
-            text-by="name"
-            track-by="name"
-            value-by="name"
-          />
-        </va-card-content>
-      </va-card>
-    </div>
-  </div>
+  <va-card>
+    <va-card-title>Search Package</va-card-title>
+    <va-card-content>
+      <va-select
+        v-model="selected"
+        :loading="isLoading"
+        :options="packages"
+        class="mb-4"
+        label="Search package name"
+        searchable
+        text-by="name"
+        track-by="name"
+        value-by="name"
+      />
+    </va-card-content>
+  </va-card>
 </template>
 
 <script lang="ts">
@@ -56,3 +52,6 @@ export default defineComponent({
 </script>
 <style scoped>
 </style>
+
+<!-- This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) -->

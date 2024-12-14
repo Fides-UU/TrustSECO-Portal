@@ -1,34 +1,11 @@
-<template>
-  <div class="row">
-    <div class="flex xs12">
-      <va-card>
-        <va-card-title>View Package</va-card-title>
-        <va-card-content>
-          <package-details-component ref="packageDetails" :name="name"/>
-        </va-card-content>
-      </va-card>
-    </div>
-  </div>
-  <div class="row">
-    <div class="flex xs12">
-      <va-card>
-        <va-card-title>Trust facts</va-card-title>
-        <va-card-content>
-          <trust-facts-table-component ref="trustFactsTable" :name="name" :selectedVersion="selectedVersion"/>
-        </va-card-content>
-      </va-card>
-    </div>
-  </div>
-</template>
-
 <script>
 import PackageDetailsComponent from '@/components/PackageDetails.vue';
-import TrustFactsTableComponent from '@/components/tables/TrustFacts.vue';
+import TrustFacts from '@/components/cards/TrustFacts.vue';
 
 export default {
   components: {
     PackageDetailsComponent,
-    TrustFactsTableComponent,
+    TrustFacts,
   },
   name: 'package-view',
   props: {
@@ -41,18 +18,22 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      selectedVersion: '',
-    };
-  },
-  async mounted() {
-    this.$watch('$refs.packageDetails.selectedVersion', (newValue) => {
-      this.selectedVersion = newValue;
-    });
-  },
 };
+
 </script>
+
+<template>
+  <va-card>
+    <va-card-title>View Package</va-card-title>
+    <va-card-content>
+      <package-details-component ref="packageDetails" :name="name" :version="version" />
+    </va-card-content>
+  </va-card>
+  <TrustFacts :name="name" :version="version"/>
+</template>
 
 <style scoped>
 </style>
+
+<!-- This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) -->

@@ -1,10 +1,7 @@
 <template>
   <div class="app-layout__navbar">
     <va-navbar color="#ffffff" text-color="primary">
-      <template v-slot:left>
-        <va-navbar-item>
-          <va-chip color="dark" size="large" square>TrustSECO</va-chip>
-        </va-navbar-item>
+      <template v-slot:left v-if="this.server_type===1">
         <va-navbar-item>
           <va-chip color="dark" flat @click="refreshUserTokens">User tokens: {{ usertokens }}</va-chip>
         </va-navbar-item>
@@ -15,9 +12,9 @@
                      color="dark">Home
           </va-button>
         </va-navbar-item>
-        <va-navbar-item>
-          <va-button :flat="currentRoute !== 'Add Job'" :square="currentRoute === 'Add Job'" :to="{ name: 'Add Job' }"
-                     color="dark">Add Job
+        <va-navbar-item v-if="this.server_type===1">
+          <va-button :flat="currentRoute !== 'Add Package'" :square="currentRoute === 'Add Package'"
+                     :to="{ name: 'Add Package' }" color="dark">Add Package
           </va-button>
         </va-navbar-item>
         <va-navbar-item>
@@ -30,19 +27,8 @@
                      :to="{ name: 'Package List' }" color="dark">Trust Scores
           </va-button>
         </va-navbar-item>
-        <!--        <va-navbar-item>-->
-        <!--          <va-button :flat="currentRoute !== 'Rewards'" :square="currentRoute === 'Rewards'" :to="{ name: 'Rewards' }"-->
-        <!--                     color="dark">My rewards-->
-        <!--          </va-button>-->
-        <!--        </va-navbar-item>-->
-        <va-navbar-item>
-          <SpiderToggleButton/>
-        </va-navbar-item>
       </template>
-      <template v-slot:right>
-        <va-navbar-item>
-          <va-button v-if="isDevMode" color="dark" disabled flat>DEV</va-button>
-        </va-navbar-item>
+      <template v-slot:right v-if="this.server_type===1">
         <va-navbar-item>
           <va-button :flat="currentRoute !== 'Settings'" :square="currentRoute === 'Settings'"
                      :to="{ name: 'Settings' }" color="dark">Settings
@@ -55,17 +41,15 @@
 
 <script>
 import router from '@/router';
-import SpiderToggleButton from '../button/SpiderToggle.vue';
 import axios from 'axios';
+import { ServerType } from '@/api';
 
 export default {
   name: 'header-component',
-  components: {
-    SpiderToggleButton,
-  },
   data() {
     return {
       usertokens: 0,
+      server_type: ServerType.Public,
     };
   },
   methods: {
@@ -76,15 +60,13 @@ export default {
       } catch {
         this.usertokens = 0;
       }
-    }
+    },
   },
-  async mounted(){
+  async mounted() {
     this.refreshUserTokens();
+    this.server_type = await this.$api.getServerType();
   },
   computed: {
-    isDevMode() {
-      return process.env.NODE_ENV === 'development';
-    },
     currentRoute() {
       return router.currentRoute.value.name;
     },

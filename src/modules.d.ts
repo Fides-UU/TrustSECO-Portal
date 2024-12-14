@@ -8,3 +8,6 @@ declare module 'lisk-client' {
   export const validator: typeof import('@liskhq/lisk-validator');
   export const codec: typeof import('@liskhq/lisk-codec');
 }
+
+/* This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) */

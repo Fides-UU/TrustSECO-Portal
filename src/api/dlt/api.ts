@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import {
   defaultJob, defaultMetrics, defaultPackage,
-  DltInterface, Job, JobForm, Metrics, Package,
+  DltInterface, Job, AddPackageForm, Metrics, Package, TrustFact,
 } from '@/api/dlt/interface';
 import axios from 'axios';
 import semver from 'semver';
@@ -11,6 +11,14 @@ interface ApiPackage {
   packageOwner: string,
   packageName: string,
   packageReleases: string[],
+}
+
+interface ApiTrustFact {
+  jobID: number,
+  version: string,
+  fact: string,
+  factData: string,
+  account: { uid: string },
 }
 
 interface ApiJob {
@@ -53,6 +61,13 @@ const parsePackage = (data: ApiPackage): Package => ({
   versions: sortVersions(data.packageReleases),
 });
 
+// Convert package data as received from the Dlt Api into the local Package interface
+const parseTrustFact = (data: ApiTrustFact): TrustFact => ({
+  ...defaultPackage,
+  type: data.fact,
+  value: data.factData,
+});
+
 // Convert job data as received from the Dlt Api into the local Job interface
 const parseJob = (data: ApiJob): Job => ({
   ...defaultJob,
@@ -84,18 +99,16 @@ export default class DltApi extends DltInterface {
     return parsePackage(data);
   }
 
-  // TODO: Remove the mock data once this AP endpoint returns correct data
-  async getTrustFacts(name: string) {
+  // TODO: Trust Facts should be per name AND version, but the API doesn't support this
+  async getTrustFacts(name: string, version: string) {
     const { data } = await axios.get(this.#getLink(`trust-facts/${name}`));
-    console.log(data);
-    const trustFacts = [];
-    for (let i = 0; i < (name.length + 5) % 10; i += 1) {
-      trustFacts[i] = {
-        type: 'github stars',
-        value: i + 1,
-      };
+    if (!data.facts) {
+      return [];
     }
-    return trustFacts;
+
+    const versionFilter = (item: ApiTrustFact) => item.version === version;
+    return data.facts.filter(versionFilter)
+      .map((item: ApiTrustFact) => parseTrustFact(item));
   }
 
   // TODO: This doesn't really belong to the DLT Api, but...
@@ -109,8 +122,14 @@ export default class DltApi extends DltInterface {
     return data.map((item: ApiJob) => parseJob(item));
   }
 
-  async addJob(job: JobForm) {
-    const { data } = await axios.post(this.#getLink('add-job'), job);
+  async addPackage(pack: AddPackageForm) {
+    const { data } = await axios.post(this.#getLink('add-job'), pack);
+    console.log(data);
+    return data;
+  }
+
+  async getMostRecentVersion(pack: Package) {
+    const { data } = await axios.post(this.#getLink('get-most-recent-version'), pack);
     console.log(data);
     return data;
   }
@@ -120,8 +139,13 @@ export default class DltApi extends DltInterface {
     return parseMetrics(data);
   }
 
-  async getTrustScore(name: string, version: string) {
-    const { data } = await axios.get(this.#getLink(`package/${name}/trustscore/${version}`));
+  async getTrustScore(name: string, version?: string) {
+    const { data } = await axios.get(this.#getLink(`package/${name}/trust-score/${version ?? ''}`));
+    return (typeof data === 'number' ? data : undefined);
+  }
+
+  async getTrustScoreCategories(name: string, version: string): Promise<Record<string, number>> {
+    const { data } = await axios.get(this.#getLink(`package/${name}/trust-score-categories/${version}`));
     return data;
   }
 
@@ -129,3 +153,6 @@ export default class DltApi extends DltInterface {
     return `${this.#baseUrl}${to}`;
   }
 }
+
+/* This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) */

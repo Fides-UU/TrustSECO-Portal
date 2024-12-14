@@ -1,5 +1,6 @@
 <template>
-  <VueTerminal console-sign="$" height="350px" :messages="logs" style="width: 50%"/>
+  <div v-if="logs.length === 0">Nothing yet</div>
+  <VueTerminal v-if="logs.length > 0" :messages="logs" console-sign="$" height="350px" style="width: 50%"/>
 </template>
 
 <script lang="ts">
@@ -31,3 +32,6 @@ export default defineComponent({
 
 <style scoped>
 </style>
+
+<!-- This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) -->

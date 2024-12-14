@@ -1,46 +1,39 @@
 <template>
   <va-switch v-model="state" :color="getColor" :loading="isLoading"
              class="spiderToggleButton" indeterminate left-label
-             @click.capture.stop="toggle">
+             @click.capture.stop="toggle" v-if="this.server_type===1">
     {{ getStatusText }}
   </va-switch>
 
-   <va-modal
-    v-model="showSpiderErrorModal"
-    hide-default-actions
-    overlay-opacity="0.2"
-  >
-    <template #header>
-      <h2>Error: couldn't start spider</h2>
-    </template>
-    <div>{{ modalErrorMessage }}</div>
-    <template #footer>
-      <va-button @click="showSpiderErrorModal = false">
-        Close
-      </va-button>
-    </template>
-  </va-modal>
+  <PopUpMessage v-model="showSpiderErrorModal" title="Error: couldn't start spider">
+    {{ modalErrorMessage }}
+  </PopUpMessage>
+
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
+import PopUpMessage from '@/components/PopUpMessage.vue';
+import { ServerType } from '@/api';
 
 export default defineComponent({
   name: 'spider-toggle-button',
+  components: { PopUpMessage },
   data() {
     return {
       state: null as boolean | null,
       isActive: false,
       isLoading: false,
       showSpiderErrorModal: false,
-      modalErrorMessage: "",
+      modalErrorMessage: '',
+      server_type: ServerType.Public,
     };
   },
   async mounted() {
     this.isActive = await this.$spiderApi.getSpiderStatus();
     this.state = this.isActive;
     console.log('SpiderToggle.load', this.isActive);
+    this.server_type = await this.$api.getServerType();
   },
   computed: {
     getColor(): string {
@@ -59,22 +52,20 @@ export default defineComponent({
       this.isLoading = true;
       this.state = null;
       try {
-        await this.$fakeDelay();
         const newState = await this.$spiderApi.toggleSpider();
-        if (typeof newState === 'string' || newState instanceof String){
-          //Not succeeded
-          this.modalErrorMessage=newState;
-          this.showSpiderErrorModal=true;
-          this.isActive=false;
-        } else  {
+        if (typeof newState === 'string' || newState instanceof String) {
+          // Not succeeded
+          this.modalErrorMessage = newState;
+          this.showSpiderErrorModal = true;
+          this.isActive = false;
+        } else {
           this.isActive = newState;
         }
-        
+
         this.state = this.isActive;
-        
       } catch (e) {
-        this.modalErrorMessage=e.message;
-        this.showSpiderErrorModal=true;
+        this.modalErrorMessage = e.message;
+        this.showSpiderErrorModal = true;
         this.state = this.isActive;
         console.error('SpiderToggle.toggle', e.message);
       }
@@ -84,7 +75,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss" scoped>
 .spiderToggleButton .va-switch__label {
   width: 100px;
 }

@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { SpiderInterface } from '@/api/spider/interface';
+import { SpiderInterface, TokensResult } from '@/api/spider/interface';
 import axios, { AxiosResponse } from 'axios';
 
 export default class SpiderApi extends SpiderInterface {
@@ -37,7 +37,15 @@ export default class SpiderApi extends SpiderInterface {
     }
   }
 
+  async getTokens(): Promise<TokensResult> {
+      const {data} = await axios.get(this.#getLink('get-tokens'));
+      return data
+  }
+
   #getLink(to: string) {
     return `${this.#baseUrl}${to}`;
   }
 }
+
+/* This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) */

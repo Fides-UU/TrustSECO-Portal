@@ -1,124 +1,35 @@
-@import "./vuestic-sass";
-@import "./icon-fonts";
+#app {
+  font-family: 'Source Sans Pro', Avenir, Helvetica, Arial, sans-serif;
+}
 
-// // Temporary colors fix for 2.1.
-// $vue-purple: #6c7fee;
-// $purple-box-shadow: 0 4px 9.6px 0.4px rgba($vue-purple, 0.5);
+body {
+  background: var(--va-background);
+}
 
-// body.va-inverted-color {
-//   ::selection {
-//     background-color: $vue-purple;
-//     color: $white;
-//   }
+// Standardize filter layout for va-data-table
+.va-input.filter {
+  margin-bottom: var(--va-card-padding);
+}
 
-//   .link,
-//   .title {
-//     color: $vue-purple;
-//   }
+// Card spacing without using .row
+.va-card {
+  margin-bottom: 1.5rem;
 
-//   .va-data-table {
-//     th.sortable {
-//       color: $vue-purple;
-//     }
-//   }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
 
-//   .va-dropdown {
-//     .profile-dropdown,
-//     .language-dropdown,
-//     .message-dropdown,
-//     .notification-dropdown {
-//       &__item {
-//         &.active,
-//         &:hover {
-//           color: $vue-purple;
-//         }
-//       }
-//     }
-//   }
+// More readable badges
+.va-badge {
+  margin: 2px;
 
-//   .flatpickr-calendar {
-//     ::selection {
-//       background-color: $vue-purple;
-//       color: $white;
-//     }
+  .va-badge__text {
+    font-size: 0.8rem;
+    text-transform: none;
+  }
+}
 
-//     .flatpickr-days {
-//       .dayContainer {
-//         .flatpickr-day {
-//           &.selected,
-//           &.selected:hover,
-//           &.startRange,
-//           &.endRange,
-//           &:hover,
-//           &.inRange:hover {
-//             background: $vue-purple;
-//             color: white;
-//           }
-
-//           &.inRange {
-//             color: $vue-purple;
-//           }
-//         }
-//       }
-//     }
-
-//     .numInputWrapper span {
-//       border: none;
-
-//       &.arrowUp,
-//       &.arrowDown {
-//         &:hover {
-//           background: none;
-//         }
-//       }
-
-//       &.arrowUp::after {
-//         border-style: solid;
-//         border-width: 0 0.25rem 0.25rem 0.25rem;
-//         border-color: transparent transparent $vue-purple transparent;
-//       }
-
-//       &.arrowDown::after {
-//         border-style: solid;
-//         border-width: 0.25rem 0.25rem 0 0.25rem;
-//         border-color: $vue-purple transparent transparent transparent;
-//       }
-//     }
-//   }
-
-//   .toasted-container {
-//     .toasted.vuestic-toast {
-//       box-shadow: $purple-box-shadow;
-
-//       i,
-//       i.fa {
-//         color: $vue-purple;
-//       }
-//     }
-//   }
-
-//   .medium-editor-toolbar,
-//   .medium-editor-toolbar-form,
-//   .medium-editor-toolbar-actions,
-//   .medium-editor-toolbar-anchor-preview {
-//     background-color: $vue-purple;
-//   }
-
-//   .medium-editor-toolbar {
-//     .medium-editor-action {
-//       background-color: $vue-purple;
-
-//       &.medium-editor-button-active {
-//         background-color: darken($vue-purple, 15%);
-//       }
-//     }
-//   }
-
-//   .medium-toolbar-arrow-under::after {
-//     border-color: $vue-purple transparent transparent transparent;
-//   }
-
-//   .medium-toolbar-arrow-over::before {
-//     border-color: transparent transparent $vue-purple transparent;
-//   }
-// }
+a {
+  color: var(--va-primary)
+}

@@ -1,18 +1,16 @@
 <template>
-  <h1>Metrics</h1><br />
-      <va-card>
-          <va-card-title>Spider log</va-card-title>
-          <va-card-content>
-            <spider-log-component/>
-          </va-card-content>
-      </va-card>
-      <br />
-      <va-card>
-          <va-card-title>DLT Metrics</va-card-title>
-          <va-card-content>
-            <DLTMetricsComponent/>
-          </va-card-content>
-      </va-card>
+  <va-card>
+    <va-card-title>DLT Metrics</va-card-title>
+    <va-card-content>
+      <DLTMetricsComponent/>
+    </va-card-content>
+  </va-card>
+  <va-card>
+    <va-card-title>Spider log</va-card-title>
+    <va-card-content>
+      <spider-log-component/>
+    </va-card-content>
+  </va-card>
 </template>
 
 <script>
@@ -30,3 +28,6 @@ export default {
 
 <style scoped>
 </style>
+
+<!-- This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences) -->

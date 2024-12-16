@@ -55,7 +55,7 @@ export default {
   methods: {
     async refreshUserTokens() {
       try {
-        const { data } = await axios.get(`http://${process.env.HOST}/api/dlt/account`);
+        const { data } = await axios.get(`http://${import.meta.env.VITE_HOST}/api/dlt/account`);
         this.usertokens = data.slingers;
       } catch {
         this.usertokens = 0;

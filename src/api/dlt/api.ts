@@ -87,7 +87,7 @@ const parseMetrics = (data: ApiMetrics): Metrics => ({
 });
 
 export default class DltApi extends DltInterface {
-  #baseUrl = `http://${process.env.HOST}/api/dlt/`;
+  #baseUrl = `http://${import.meta.env.VITE_HOST}/api/dlt/`;
 
   async getPackages() {
     const { data } = await axios.get(this.#getLink('packages'));
@@ -113,7 +113,7 @@ export default class DltApi extends DltInterface {
 
   // TODO: This doesn't really belong to the DLT Api, but...
   async getDownloadLink() {
-    const { data } = await axios.get(`http://${process.env.HOST}/api/download`);
+    const { data } = await axios.get(`http://${import.meta.env.VITE_HOST}/api/download`);
     return data;
   }
 

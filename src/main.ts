@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import { createApp } from 'vue';
 import { createVuestic } from 'vuestic-ui';
 import copyText from '@meforma/vue-copy-to-clipboard';
@@ -15,9 +14,6 @@ import {
 } from './api';
 
 import router from './router';
-
-dotenv.config();
-process.env.HOST ??= 'localhost:3000';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

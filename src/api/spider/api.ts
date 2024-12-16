@@ -3,7 +3,7 @@ import { SpiderInterface, TokensResult } from '@/api/spider/interface';
 import axios, { AxiosResponse } from 'axios';
 
 export default class SpiderApi extends SpiderInterface {
-  #baseUrl = `http://${process.env.HOST}/api/spider/`;
+  #baseUrl = `http://${import.meta.env.VITE_HOST}/api/spider/`;
 
   async getSpiderStatus() {
     const { data } = await axios.get(this.#getLink('status'));

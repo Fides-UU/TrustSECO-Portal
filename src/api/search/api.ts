@@ -9,7 +9,7 @@ import {
 import axios, { AxiosResponse } from 'axios';
 
 export default class SearchApi extends SearchInterface {
-  #baseUrl = 'http://localhost:3000/api/search/';
+  #baseUrl = `http://${import.meta.env.VITE_HOST}/api/search/`;
 
   async getMiners(): Promise<Miner[]> {
     const { data } = await axios.get(this.#getLink('miners'));

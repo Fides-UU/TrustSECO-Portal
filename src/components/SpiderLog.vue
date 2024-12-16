@@ -20,7 +20,7 @@ export default defineComponent({
   },
   methods: {
     setupWebsocket() {
-      const connection = new WebSocket('ws://localhost:3000/websocket');
+      const connection = new WebSocket(`ws://${import.meta.env.VITE_HOST}/websocket`);
 
       connection.onmessage = (message) => {
         this.logs.push(message.data);

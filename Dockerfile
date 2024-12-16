@@ -10,6 +10,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+ARG VITE_HOST="localhost:3000"
+ENV VITE_HOST=$VITE_HOST
+
 RUN npm run build
 
 FROM scratch

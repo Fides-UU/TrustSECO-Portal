@@ -98,7 +98,7 @@ export default defineComponent({
   },
   methods: {
     async handleSubmit() {
-      axios.post('http://localhost:3000/api/dlt/store-github-link', {
+      axios.post(`http://${import.meta.env.VITE_HOST}/api/dlt/store-github-link`, {
         data: `https://github.com/${this.request_data.user.gh_username.toLowerCase()}.gpg`,
       }).then((response) => {
         if (!response.data.stored_on_github) {
@@ -106,7 +106,7 @@ export default defineComponent({
           return;
         }
 
-        axios.post('http://localhost:3000/api/spider/set-tokens', {
+        axios.post(`http://${import.meta.env.VITE_HOST}/api/spider/set-tokens`, {
           github_token: this.request_data.user.gh_token,
           libraries_token: this.request_data.user.libraries_token,
         }).then(() => {
@@ -126,11 +126,11 @@ export default defineComponent({
     },
   },
   async mounted() {
-    this.request_data.user.gh_username = (await axios.get('http://localhost:3000/api/dlt/get-github-link')).data.slice(19).slice(0, -4);
-    const { data } = await axios.get('http://localhost:3000/api/spider/get-tokens');
+    this.request_data.user.gh_username = (await axios.get(`http://${import.meta.env.VITE_HOST}/api/dlt/get-github-link`)).data.slice(19).slice(0, -4);
+    const { data } = await axios.get(`http://${import.meta.env.VITE_HOST}/api/spider/get-tokens`);
     this.request_data.user.gh_token = data.github_token;
     this.request_data.user.libraries_token = data.libraries_token;
-    this.request_data.user.dlt_gpg = (await axios.get('http://localhost:3000/api/dlt/get-gpg-key')).data;
+    this.request_data.user.dlt_gpg = (await axios.get(`http://${import.meta.env.VITE_HOST}/api/dlt/get-gpg-key`)).data;
   },
 });
 </script>

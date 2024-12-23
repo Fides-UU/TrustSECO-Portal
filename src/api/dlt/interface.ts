@@ -37,7 +37,7 @@ export interface Metrics {
 export abstract class DltInterface {
   abstract getPackages(): Promise<Package[]>;
 
-  abstract getPackage(name: string): Promise<Package>;
+  abstract getPackage(name: string): Promise<Package | null>;
 
   abstract getTrustFacts(name: string, version: string): Promise<TrustFact[]>;
 

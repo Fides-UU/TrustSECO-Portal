@@ -128,7 +128,7 @@ export default defineComponent({
 
         // check if the package is already in the system
         const pack = await this.$dltApi.getPackage(this.job.name);
-        if (pack.versions.includes(this.job.release)) {
+        if (pack !== null && pack.versions.includes(this.job.release)) {
           this.showAlreadyAdded = true;
         } else {
           // ledger only accepts lower case platform names
